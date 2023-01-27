@@ -1,0 +1,17 @@
+database:
+  url: jdbc:mysql://localhost/numinous
+  username: username
+  password: password
+  dialect: MYSQL
+experience:
+  levels:
+    1: 0
+    2: 1000
+    3: 2000
+    4: 3000
+    5: 5000
+    6: 8000
+    7: 13000
+    8: 21000
+    9: 34000
+    10: 55000

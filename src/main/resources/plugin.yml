@@ -1,0 +1,25 @@
+name: numinous-treasury
+author: alyphen
+version: @version@
+main: net.kingdommc.darkages.numinoustreasury.NuminousTreasury
+api-version: '1.19'
+depend:
+- rpk-core-bukkit
+- rpk-player-lib-bukkit
+- rpk-character-lib-bukkit
+commands:
+  profession:
+    description: |
+      Profession management command
+      /profession set [profession] - Sets your profession
+      /profession view - Show your profession info
+      /profession list - View a list of professions
+    usage: /<command> [set|view|list]
+  numinousitem:
+    description: Creates a numinous item
+    usage: /<command> [item] (amount)
+    aliases: [nitem]
+permissions:
+  numinoustreasury.command.numinousitem:
+    description: Allows creating items
+    default: op

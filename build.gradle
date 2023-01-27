@@ -1,0 +1,145 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'nu.studer.jooq' version '7.1.1'
+    id 'maven-publish'
+}
+
+group 'net.kingdommc.darkages'
+version '0.1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url = 'https://repo.rpkit.com/repository/maven-public/' }
+}
+
+dependencies {
+    implementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
+    implementation 'com.rpkit:rpk-core-bukkit:2.4.1:all'
+    implementation 'com.rpkit:rpk-player-lib-bukkit:2.4.1:all'
+    implementation 'com.rpkit:rpk-character-lib-bukkit:2.4.1:all'
+    implementation 'org.jooq:jooq:3.17.6'
+    implementation 'org.flywaydb:flyway-core:9.4.0'
+    implementation 'org.flywaydb:flyway-mysql:9.4.0'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    jooqGenerator 'org.jooq:jooq-meta-extensions:3.17.6'
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.extensions.ddl.DDLDatabase'
+                        inputSchema = 'PUBLIC'
+                        includes = '.*'
+                        excludes = ''
+                        properties {
+                            property {
+                                key = 'scripts'
+                                value = 'src/main/resources/net/kingdommc/darkages/numinoustreasury/db/migration'
+                            }
+                            property {
+                                key = 'sort'
+                                value = 'semantic'
+                            }
+                            property {
+                                key = 'defaultNameCase'
+                                value = 'lower'
+                            }
+                        }
+                    }
+                    target {
+                        packageName = 'net.kingdommc.darkages.numinoustreasury.jooq'
+                    }
+                }
+            }
+        }
+    }
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [
+            'version': version
+    ]
+}
+
+shadowJar {
+    mergeServiceFiles()
+    dependencies {
+        include(dependency('org.jetbrains.kotlin:kotlin-stdlib-jdk8'))
+        include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+        include(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
+        include(dependency('org.jetbrains:annotations'))
+        include(dependency('org.jetbrains.kotlin:kotlin-stdlib-jdk7'))
+        include(dependency('org.bstats:bstats-bukkit'))
+        include(dependency('org.bstats:bstats-base'))
+        include(dependency('dev.forkhandles:result4k'))
+        include(dependency('org.jooq:jooq'))
+        include(dependency('io.r2dbc:r2dbc-spi'))
+        include(dependency('org.reactivestreams:reactive-streams'))
+        include(dependency('jakarta.xml.bind:jakarta.xml.bind-api'))
+        include(dependency('com.sun.activation:jakarta.activation'))
+        include(dependency('org.flywaydb:flyway-core'))
+        include(dependency('org.flywaydb:flyway-mysql'))
+        include(dependency('org.mariadb.jdbc:mariadb-java-client'))
+        include(dependency('com.h2database:h2'))
+        include(dependency('com.zaxxer:HikariCP'))
+        include(dependency('com.google.code.gson:gson'))
+        include(dependency('com.dansplugins:ponder-bukkit'))
+        include(dependency('com.dansplugins:ponder-commands'))
+    }
+
+    relocate 'com.google', 'net.kingdommc.darkages.numinoustreasury.shadow.com.google'
+    relocate 'org.mariadb', 'net.kingdommc.darkages.numinoustreasury.shadow.org.mariadb'
+    relocate 'com.sun', 'net.kingdommc.darkages.numinoustreasury.shadow.com.sun'
+    relocate 'com.zaxxer', 'net.kingdommc.darkages.numinoustreasury.shadow.com.zaxxer'
+    relocate 'google', 'net.kingdommc.darkages.numinoustreasury.shadow.google'
+    relocate 'io.r2dbc', 'net.kingdommc.darkages.numinoustreasury.shadow.io.r2dbc'
+    relocate 'jakarta', 'net.kingdommc.darkages.numinoustreasury.shadow.jakarta'
+    relocate 'org.flywaydb', 'net.kingdommc.darkages.numinoustreasury.shadow.org.flywaydb'
+    relocate 'org.intellij', 'net.kingdommc.darkages.numinoustreasury.shadow.org.intellij'
+    relocate 'org.jetbrains', 'net.kingdommc.darkages.numinoustreasury.shadow.org.jetbrains'
+    relocate 'org.jooq', 'net.kingdommc.darkages.numinoustreasury.shadow.org.jooq'
+    relocate 'org.reactivestreams', 'net.kingdommc.darkages.numinoustreasury.shadow.org.reactivestreams'
+}
+
+artifacts {
+    archives shadowJar
+}
+
+def githubUsername = ""
+def githubToken = ""
+def githubPropertiesFile = new File(project.projectDir, "github.properties")
+if (githubPropertiesFile.exists()) {
+    def githubProperties = new Properties()
+    githubProperties.load(new FileInputStream(githubPropertiesFile))
+    githubUsername = githubProperties.get("github-username")
+    githubToken = githubProperties.get("github-token")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/kingdom-dark-ages/")
+            credentials {
+                username = githubUsername
+                password = githubToken
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
