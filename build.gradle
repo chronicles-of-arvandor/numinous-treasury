@@ -130,7 +130,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/kingdom-dark-ages/")
+            url = uri("https://maven.pkg.github.com/kingdom-dark-ages/numinous-treasury/")
             credentials {
                 username = githubUsername
                 password = githubToken
