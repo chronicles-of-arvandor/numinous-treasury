@@ -106,6 +106,12 @@ public final class NuminousProfessionService implements Service {
         setProfessionExperience(character, experience, callback);
     }
 
+    public void addProfessionExperience(Player player, int experience, ExperienceUpdateCallback callback) {
+        RPKCharacter character = getRpkCharacter(player);
+        if (character == null) return;
+        addProfessionExperience(character, experience, callback);
+    }
+
     public int getProfessionExperience(RPKCharacter character) {
         return characterProfessionExperience.get(character.getId().getValue());
     }
@@ -118,11 +124,24 @@ public final class NuminousProfessionService implements Service {
         });
     }
 
+    public void addProfessionExperience(RPKCharacter character, int experience, ExperienceUpdateCallback callback) {
+        int experienceForMaxLevel = getExperienceForLevel(getMaxLevel());
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            repository.getAndUpdate(character.getId(), (dsl, oldExperience) -> repository.setProfessionExperience(dsl, character.getId(), Math.min(oldExperience + experience, experienceForMaxLevel)), (newExperience) -> {
+                characterProfessionExperience.put(character.getId().getValue(), newExperience);
+                callback.invoke(newExperience);
+            });
+        });
+    }
+
     public int getLevelAtExperience(int experience) {
         int level = 1;
-        while (plugin.getConfig().contains("experience.levels." + (level + 1)) && experience >= plugin.getConfig().getInt("experience.levels." + (level + 1))) {
+        plugin.getLogger().info("Experience: " + experience);
+        plugin.getLogger().info("Experience for level " + (level + 1) + ": " + getTotalExperienceForLevel(level + 1));
+        while (plugin.getConfig().contains("experience.levels." + (level + 1)) && experience >= getTotalExperienceForLevel(level + 1)) {
             level++;
         }
+        plugin.getLogger().info("Level: " + level);
         return level;
     }
 
@@ -132,12 +151,17 @@ public final class NuminousProfessionService implements Service {
     }
 
     public int getTotalExperienceForLevel(int level) {
-        return plugin.getConfig().getInt("experience.levels." + level);
+        int totalExperienceForLevel = 0;
+        for (int i = 1; i <= level; i++) {
+            if (!plugin.getConfig().contains("experience.levels." + i)) break;
+            totalExperienceForLevel += plugin.getConfig().getInt("experience.levels." + i);
+        }
+        return totalExperienceForLevel;
     }
 
     public int getMaxLevel() {
         int level = 1;
-        while (plugin.getConfig().contains("experience.levels." + level)) {
+        while (plugin.getConfig().contains("experience.levels." + (level + 1))) {
             level++;
         }
         return level;

@@ -111,6 +111,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
     }
 
     public boolean isItem(ItemStack itemStack) {
+        if (itemStack == null) return false;
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return false;
         String id = meta.getPersistentDataContainer().get(plugin.keys().itemId(), STRING);
