@@ -29,7 +29,7 @@ public final class ProfessionViewCommand implements CommandExecutor, TabComplete
         }
         int level = professionService.getProfessionLevel(player);
         int experience = professionService.getProfessionExperience(player);
-        int experienceSinceLastLevel = experience - professionService.getTotalExperienceForLevel(level);
+        int experienceSinceLastLevel = level > 1 ? experience - professionService.getTotalExperienceForLevel(level -1) : 0;
         int experienceRequiredForNextLevel = professionService.getExperienceForLevel(level + 1);
         int maxLevel = professionService.getMaxLevel();
         sender.sendMessage(WHITE + "Profession: " + GRAY + profession.getName());
