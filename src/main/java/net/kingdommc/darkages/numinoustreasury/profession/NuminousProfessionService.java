@@ -78,6 +78,8 @@ public final class NuminousProfessionService implements Service {
     public void setProfession(RPKCharacter character, NuminousProfession profession, Runnable callback) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
            repository.setProfessionId(character.getId(), profession.getId());
+           characterProfessions.put(character.getId().getValue(), profession.getId());
+           characterProfessionExperience.put(character.getId().getValue(), 0);
            plugin.getServer().getScheduler().runTask(plugin, callback);
         });
     }
@@ -118,7 +120,7 @@ public final class NuminousProfessionService implements Service {
 
     public int getLevelAtExperience(int experience) {
         int level = 1;
-        while (plugin.getConfig().contains("experience.levels." + level) && experience >= plugin.getConfig().getInt("experience.levels." + level)) {
+        while (plugin.getConfig().contains("experience.levels." + (level + 1)) && experience >= plugin.getConfig().getInt("experience.levels." + (level + 1))) {
             level++;
         }
         return level;

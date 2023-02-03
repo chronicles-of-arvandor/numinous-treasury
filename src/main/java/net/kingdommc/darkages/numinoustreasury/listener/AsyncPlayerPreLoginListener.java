@@ -34,9 +34,7 @@ public final class AsyncPlayerPreLoginListener implements Listener {
         }
         RPKCharacter character = characterService.getActiveCharacter(minecraftProfile).join();
         NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
-        if (minecraftProfile.isOnline()) {
-            professionService.load(character);
-        }
+        professionService.load(character);
     }
 
 }

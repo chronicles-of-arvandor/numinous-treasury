@@ -32,7 +32,7 @@ public final class WorkstationInterface implements InventoryHolder {
     public WorkstationInterface(NuminousTreasury plugin, Player player, List<NuminousRecipe> possibleRecipes) {
         this.plugin = plugin;
         this.player = player;
-        this.inventory = plugin.getServer().createInventory(this, INVENTORY_SIZE);
+        this.inventory = plugin.getServer().createInventory(this, INVENTORY_SIZE, "Crafting");
         this.possibleRecipes = possibleRecipes;
     }
 
