@@ -34,6 +34,7 @@ public final class WorkstationInterface implements InventoryHolder {
         this.player = player;
         this.inventory = plugin.getServer().createInventory(this, INVENTORY_SIZE, "Crafting");
         this.possibleRecipes = possibleRecipes;
+        renderPage(0);
     }
 
     @Override
@@ -104,32 +105,32 @@ public final class WorkstationInterface implements InventoryHolder {
                     );
                     NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
                     int maxLevel = professionService.getMaxLevel();
-                    int experienceForMaxLevel = professionService.getTotalExperienceForLevel(maxLevel);
                     int oldExperience = professionService.getProfessionExperience(player);
                     int oldLevel = professionService.getLevelAtExperience(oldExperience);
-                    int newExperience = Math.min(professionService.getProfessionExperience(player) + recipe.getExperience(), experienceForMaxLevel);
-                    int newLevel = professionService.getLevelAtExperience(newExperience);
-                    int experienceSinceLastLevel = newExperience - professionService.getTotalExperienceForLevel(newLevel);
-                    int experienceRequiredForNextLevel = professionService.getExperienceForLevel(newLevel + 1);
-                    professionService.setProfessionExperience(player, newExperience, () -> {
-                        NuminousProfession profession = professionService.getProfession(player);
-                        if (profession != null) {
-                            if (newLevel < maxLevel) {
-                                player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (" + experienceSinceLastLevel + "/" + experienceRequiredForNextLevel + ")");
-                            } else if (oldLevel < maxLevel && newLevel == maxLevel) {
-                                player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + "exp (MAX LEVEL)");
-                            }
-                            if (newLevel > oldLevel) {
-                                if (newLevel == maxLevel) {
-                                    player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
-                                } else {
-                                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                    professionService.addProfessionExperience(player, recipe.getExperience(), (newExperience) -> {
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            int newLevel = professionService.getLevelAtExperience(newExperience);
+                            int experienceSinceLastLevel = newExperience - (newLevel > 1 ? professionService.getTotalExperienceForLevel(newLevel) : 0);
+                            int experienceRequiredForNextLevel = professionService.getExperienceForLevel(newLevel + 1);
+                            NuminousProfession profession = professionService.getProfession(player);
+                            if (profession != null) {
+                                if (newLevel < maxLevel) {
+                                    player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (" + experienceSinceLastLevel + "/" + experienceRequiredForNextLevel + ")");
+                                } else if (oldLevel < maxLevel && newLevel == maxLevel) {
+                                    player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + "exp (MAX LEVEL)");
                                 }
-                                player.sendMessage(YELLOW + "Level up! You are now a level " + newLevel + " " + profession.getName());
-                            } else {
-                                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                                if (newLevel > oldLevel) {
+                                    if (newLevel == maxLevel) {
+                                        player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+                                    } else {
+                                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                                    }
+                                    player.sendMessage(YELLOW + "Level up! You are now a level " + newLevel + " " + profession.getName());
+                                } else {
+                                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                                }
                             }
-                        }
+                        });
                     });
                 } else {
                     if (!professionRequirementsMet) {
