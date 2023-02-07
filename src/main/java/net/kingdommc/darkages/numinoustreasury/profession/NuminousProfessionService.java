@@ -11,10 +11,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.logging.Level.SEVERE;
 
 public final class NuminousProfessionService implements Service {
 
@@ -31,11 +34,13 @@ public final class NuminousProfessionService implements Service {
         File professionsFolder = new File(plugin.getDataFolder(), "professions");
         if (!professionsFolder.exists()) {
             professionsFolder.mkdirs();
+            saveDefaultProfessions(professionsFolder);
         }
         this.professions = Arrays.stream(professionsFolder.listFiles()).map(professionFile -> {
             YamlConfiguration itemConfiguration = YamlConfiguration.loadConfiguration(professionFile);
             return itemConfiguration.getObject("profession", NuminousProfession.class);
         }).toList();
+        plugin.getLogger().info("Loaded " + professions.size() + " professions");
         this.characterProfessions = new ConcurrentHashMap<>();
         this.characterProfessionExperience = new ConcurrentHashMap<>();
     }
@@ -136,12 +141,9 @@ public final class NuminousProfessionService implements Service {
 
     public int getLevelAtExperience(int experience) {
         int level = 1;
-        plugin.getLogger().info("Experience: " + experience);
-        plugin.getLogger().info("Experience for level " + (level + 1) + ": " + getTotalExperienceForLevel(level + 1));
         while (plugin.getConfig().contains("experience.levels." + (level + 1)) && experience >= getTotalExperienceForLevel(level + 1)) {
             level++;
         }
-        plugin.getLogger().info("Level: " + level);
         return level;
     }
 
@@ -187,6 +189,39 @@ public final class NuminousProfessionService implements Service {
         RPKCharacterService characterService = Services.INSTANCE.get(RPKCharacterService.class);
         if (characterService == null) return null;
         return characterService.getPreloadedActiveCharacter(minecraftProfile);
+    }
+
+    private void saveDefaultProfessions(File professionsFolder) {
+        saveCarpenter(professionsFolder);
+        saveSmith(professionsFolder);
+    }
+
+    private void saveCarpenter(File professionsFolder) {
+        File carpenterFile = new File(professionsFolder, "carpenter.yml");
+        YamlConfiguration carpenterConfig = new YamlConfiguration();
+        carpenterConfig.set("profession", new NuminousProfession(
+                "carpenter",
+                "Carpenter"
+        ));
+        try {
+            carpenterConfig.save(carpenterFile);
+        } catch (IOException exception) {
+            plugin.getLogger().log(SEVERE, "Failed to save carpenter profession", exception);
+        }
+    }
+
+    private void saveSmith(File professionsFolder) {
+        File smithFile = new File(professionsFolder, "smith.yml");
+        YamlConfiguration smithConfig = new YamlConfiguration();
+        smithConfig.set("profession", new NuminousProfession(
+                "smith",
+                "Smith"
+        ));
+        try {
+            smithConfig.save(smithFile);
+        } catch (IOException exception) {
+            plugin.getLogger().log(SEVERE, "Failed to save smith profession", exception);
+        }
     }
 
 }

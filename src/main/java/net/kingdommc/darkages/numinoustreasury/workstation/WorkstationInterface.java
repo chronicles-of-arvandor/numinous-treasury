@@ -130,11 +130,15 @@ public final class WorkstationInterface implements InventoryHolder {
                                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                                 }
                             }
+                            renderPage(getPage());
                         });
                     });
                 } else {
                     if (!professionRequirementsMet) {
-                        player.sendMessage(RED + "This recipe requires you to be a lv" + recipe.getRequiredProfessionLevel() + " " + recipe.getRequiredProfession().getName());
+                        player.sendMessage(RED + "This recipe requires you to have one of the following professions:");
+                        recipe.getApplicableProfessions().forEach(profession -> {
+                            player.sendMessage(RED + "• Lv" + recipe.getRequiredProfessionLevel(profession) + " " + profession.getName());
+                        });
                     }
                     if (!ingredientRequirementsMet) {
                         player.sendMessage(RED + "This recipe requires you to have the following ingredients:");
