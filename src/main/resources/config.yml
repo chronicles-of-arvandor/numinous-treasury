@@ -15,3 +15,6 @@ experience:
     8: 21000
     9: 34000
     10: 55000
+stamina:
+  max: 100
+  restoration-interval: PT15M

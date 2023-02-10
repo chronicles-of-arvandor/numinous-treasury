@@ -28,6 +28,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
     private final List<NuminousItemStack> results;
     private final Map<NuminousProfession, Integer> requiredProfessionLevel;
     private final int experience;
+    private final int stamina;
     private final Material workstation;
     private final Material iconMaterial;
 
@@ -36,6 +37,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                           List<NuminousItemStack> results,
                           Map<NuminousProfession, Integer> requiredProfessionLevel,
                           int experience,
+                          int stamina,
                           Material workstation,
                           Material iconMaterial) {
         this.name = name;
@@ -43,6 +45,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
         this.results = results;
         this.requiredProfessionLevel = requiredProfessionLevel;
         this.experience = experience;
+        this.stamina = stamina;
         this.workstation = workstation;
         this.iconMaterial = iconMaterial;
     }
@@ -69,6 +72,10 @@ public final class NuminousRecipe implements ConfigurationSerializable {
 
     public int getExperience() {
         return experience;
+    }
+
+    public int getStamina() {
+        return stamina;
     }
 
     public Material getWorkstation() {
@@ -184,6 +191,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                                 this::getRequiredProfessionLevel
                         )),
                 "experience", getExperience(),
+                "stamina", getStamina(),
                 "workstation", getWorkstation().name(),
                 "icon", iconMaterial.name()
         );
@@ -204,6 +212,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                                 Map.Entry::getValue
                         )),
                 (Integer) serialized.get("experience"),
+                (Integer) serialized.get("stamina"),
                 Material.valueOf((String) serialized.get("workstation")),
                 Material.valueOf((String) serialized.get("icon"))
         );

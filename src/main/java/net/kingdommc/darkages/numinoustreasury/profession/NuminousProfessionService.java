@@ -171,7 +171,9 @@ public final class NuminousProfessionService implements Service {
 
     public void load(RPKCharacter character) {
         String professionId = repository.getProfessionId(character.getId());
-        characterProfessions.put(character.getId().getValue(), professionId);
+        if (professionId != null) {
+            characterProfessions.put(character.getId().getValue(), professionId);
+        }
         int professionExperience = repository.getProfessionExperience(character.getId());
         characterProfessionExperience.put(character.getId().getValue(), professionExperience);
     }

@@ -2,7 +2,6 @@ package net.kingdommc.darkages.numinoustreasury.profession;
 
 import com.rpkit.characters.bukkit.character.RPKCharacterId;
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import java.util.Objects;
 
@@ -36,24 +35,24 @@ public final class NuminousCharacterProfessionRepository {
     }
 
     public int getProfessionExperience(RPKCharacterId characterId) {
-        Integer experience = dsl.select(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE)
+        return dsl.select(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE)
                 .from(NUMINOUS_CHARACTER_PROFESSION)
                 .where(NUMINOUS_CHARACTER_PROFESSION.CHARACTER_ID.eq(characterId.getValue()))
-                .fetchOne(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE);
-        if (experience == null) return 0;
-        return experience;
+                .fetchOptional(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE)
+                .orElse(0);
     }
 
     public void getAndUpdate(RPKCharacterId characterId, ExperienceUpdateFunction function, ExperienceUpdateCallback callback) {
         dsl.transaction(config -> {
-            Integer experience = DSL.using(config)
+            DSLContext transactionalDsl = config.dsl();
+            Integer experience = transactionalDsl
                     .select(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE)
                     .from(NUMINOUS_CHARACTER_PROFESSION)
                     .where(NUMINOUS_CHARACTER_PROFESSION.CHARACTER_ID.eq(characterId.getValue()))
                     .forUpdate()
                     .fetchOne(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE);
-            function.invoke(DSL.using(config), Objects.requireNonNullElse(experience, 0));
-            Integer newExperience = DSL.using(config)
+            function.invoke(transactionalDsl, Objects.requireNonNullElse(experience, 0));
+            Integer newExperience = transactionalDsl
                     .select(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE)
                     .from(NUMINOUS_CHARACTER_PROFESSION)
                     .where(NUMINOUS_CHARACTER_PROFESSION.CHARACTER_ID.eq(characterId.getValue()))

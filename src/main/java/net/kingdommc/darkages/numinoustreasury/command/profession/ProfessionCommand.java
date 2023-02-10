@@ -35,7 +35,7 @@ public final class ProfessionCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(RED + "Usage: /profession [set|view]");
+            sender.sendMessage(RED + "Usage: /profession [set|view|list]");
             return true;
         }
         if (setAliases.contains(args[0].toLowerCase())) {
@@ -45,7 +45,7 @@ public final class ProfessionCommand implements CommandExecutor, TabCompleter {
         } else if (listAliases.contains(args[0].toLowerCase())) {
             return professionListCommand.onCommand(sender, command, label, Arrays.stream(args).skip(1).toArray(String[]::new));
         } else {
-            sender.sendMessage(RED + "Usage: /profession [set|view]");
+            sender.sendMessage(RED + "Usage: /profession [set|view|list]");
             return true;
         }
     }
@@ -57,7 +57,7 @@ public final class ProfessionCommand implements CommandExecutor, TabCompleter {
         } else if (args.length == 1) {
             return subcommands.stream().filter(subcommand -> subcommand.startsWith(args[0])).toList();
         } else {
-            if (setAliases.contains(args[0])) {
+            if (setAliases.contains(args[0].toLowerCase())) {
                 return professionSetCommand.onTabComplete(sender, command, label, Arrays.stream(args).skip(1).toArray(String[]::new));
             } else if (viewAliases.contains(args[0].toLowerCase())) {
                 return professionViewCommand.onTabComplete(sender, command, label, Arrays.stream(args).skip(1).toArray(String[]::new));

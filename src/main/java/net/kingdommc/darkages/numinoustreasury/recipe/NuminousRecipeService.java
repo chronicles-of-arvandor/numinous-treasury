@@ -70,6 +70,7 @@ public final class NuminousRecipeService implements Service {
                         professionService.getProfessionById("carpenter"), 1
                 ),
                 5,
+                5,
                 CRAFTING_TABLE,
                 STICK
         ));
@@ -94,6 +95,7 @@ public final class NuminousRecipeService implements Service {
                 Map.of(
                         professionService.getProfessionById("smith"), 1
                 ),
+                5,
                 5,
                 BLAST_FURNACE,
                 IRON_INGOT
@@ -121,6 +123,7 @@ public final class NuminousRecipeService implements Service {
                         professionService.getProfessionById("smith"), 2
                 ),
                 10,
+                10,
                 FURNACE,
                 IRON_INGOT
         ));
@@ -145,6 +148,7 @@ public final class NuminousRecipeService implements Service {
                 Map.of(
                         professionService.getProfessionById("smith"), 5
                 ),
+                15,
                 15,
                 FURNACE,
                 IRON_INGOT
@@ -171,6 +175,7 @@ public final class NuminousRecipeService implements Service {
                 Map.of(
                         professionService.getProfessionById("smith"), 10
                 ),
+                20,
                 20,
                 FURNACE,
                 IRON_SWORD
