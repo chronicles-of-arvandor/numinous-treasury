@@ -23,8 +23,12 @@ public final class RPKCharacterSwitchListener implements Listener {
         }
 
         NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
-        staminaService.unload(event.getFromCharacter());
-        staminaService.load(event.getCharacter());
+        if (fromCharacter != null) {
+            staminaService.unload(event.getFromCharacter());
+        }
+        if (toCharacter != null) {
+            staminaService.load(event.getCharacter());
+        }
     }
 
 }
