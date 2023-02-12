@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
+import static net.md_5.bungee.api.ChatColor.GRAY;
 import static org.bukkit.persistence.PersistentDataType.STRING;
 
 @SerializableAs("NuminousItemType")
@@ -104,6 +105,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 lore = new ArrayList<>();
             }
             lore.add(0, getRarity().getColor() + getRarity().getDisplayName());
+            lore.add(1, GRAY + "Weight: " + getWeight().toString());
             meta.setLore(lore);
         }
         itemStack.setItemMeta(meta);

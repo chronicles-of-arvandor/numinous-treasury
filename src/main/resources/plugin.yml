@@ -19,7 +19,42 @@ commands:
     description: Creates a numinous item
     usage: /<command> [item] (amount)
     aliases: [nitem]
+  stamina:
+    description: |
+      Stamina management command
+      /stamina view (player) - Views stamina
+      /stamina set (player) [stamina] - Sets stamina
+    usage: /<command> [set|view]
+  node:
+    description: |
+      Node management command
+      /node create - Starts the node creation wizard
+      /node delete [node] - Deletes a node
+      /node session set - Sets an attribute of the current node session
+      /node session create - Finalizes the node creation session and creates the node
+    usage: /<command> [create|delete|session]
 permissions:
   numinoustreasury.command.numinousitem:
     description: Allows creating items
+    default: op
+  numinoustreasury.command.stamina.set:
+    description: Allows setting stamina
+    default: op
+  numinoustreasury.command.stamina.set.other:
+    description: Allows setting stamina for other players
+    default: op
+  numinoustreasury.command.stamina.view:
+    description: Allows viewing stamina
+    default: true
+  numinoustreasury.command.stamina.view.other:
+    description: Allows viewing stamina for other players
+    default: op
+  numinoustreasury.command.stamina.view.precise:
+    description: Allows viewing precise stamina numbers
+    default: op
+  numinoustreasury.command.node.create:
+    description: Allows creating nodes
+    default: op
+  numinoustreasury.command.node.delete:
+    description: Allows deleting nodes
     default: op

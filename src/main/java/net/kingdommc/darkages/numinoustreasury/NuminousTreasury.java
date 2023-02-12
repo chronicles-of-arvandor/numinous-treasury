@@ -3,8 +3,14 @@ package net.kingdommc.darkages.numinoustreasury;
 import com.rpkit.core.service.Services;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.kingdommc.darkages.numinoustreasury.command.node.NodeCommand;
 import net.kingdommc.darkages.numinoustreasury.command.numinousitem.NuminousItemCommand;
 import net.kingdommc.darkages.numinoustreasury.command.profession.ProfessionCommand;
+import net.kingdommc.darkages.numinoustreasury.command.stamina.StaminaCommand;
+import net.kingdommc.darkages.numinoustreasury.droptable.NuminousDropTable;
+import net.kingdommc.darkages.numinoustreasury.droptable.NuminousDropTableItem;
+import net.kingdommc.darkages.numinoustreasury.droptable.NuminousDropTableService;
+import net.kingdommc.darkages.numinoustreasury.interaction.NuminousInteractionService;
 import net.kingdommc.darkages.numinoustreasury.item.NuminousItemService;
 import net.kingdommc.darkages.numinoustreasury.item.NuminousItemStack;
 import net.kingdommc.darkages.numinoustreasury.item.NuminousItemType;
@@ -13,11 +19,16 @@ import net.kingdommc.darkages.numinoustreasury.item.action.Blocked;
 import net.kingdommc.darkages.numinoustreasury.item.action.RestoreHunger;
 import net.kingdommc.darkages.numinoustreasury.listener.*;
 import net.kingdommc.darkages.numinoustreasury.measurement.Weight;
+import net.kingdommc.darkages.numinoustreasury.node.NuminousNodeRepository;
+import net.kingdommc.darkages.numinoustreasury.node.NuminousNodeService;
 import net.kingdommc.darkages.numinoustreasury.profession.NuminousCharacterProfessionRepository;
 import net.kingdommc.darkages.numinoustreasury.profession.NuminousProfession;
 import net.kingdommc.darkages.numinoustreasury.profession.NuminousProfessionService;
 import net.kingdommc.darkages.numinoustreasury.recipe.NuminousRecipe;
 import net.kingdommc.darkages.numinoustreasury.recipe.NuminousRecipeService;
+import net.kingdommc.darkages.numinoustreasury.stamina.NuminousCharacterStaminaRepository;
+import net.kingdommc.darkages.numinoustreasury.stamina.NuminousStaminaService;
+import net.kingdommc.darkages.numinoustreasury.stamina.StaminaTier;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +39,9 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class NuminousTreasury extends JavaPlugin {
 
@@ -56,6 +70,10 @@ public final class NuminousTreasury extends JavaPlugin {
 
         // Recipes
         ConfigurationSerialization.registerClass(NuminousRecipe.class, "NuminousRecipe");
+
+        // Drop tables
+        ConfigurationSerialization.registerClass(NuminousDropTable.class, "NuminousDropTable");
+        ConfigurationSerialization.registerClass(NuminousDropTableItem.class, "NuminousDropTableItem");
 
         saveDefaultConfig();
 
@@ -92,21 +110,47 @@ public final class NuminousTreasury extends JavaPlugin {
         );
 
         NuminousCharacterProfessionRepository characterProfessionRepository = new NuminousCharacterProfessionRepository(dsl);
+        NuminousCharacterStaminaRepository characterStaminaRepository = new NuminousCharacterStaminaRepository(this, dsl);
+        NuminousNodeRepository nodeRepository = new NuminousNodeRepository(this, dsl);
 
         Services.INSTANCE.set(NuminousItemService.class, new NuminousItemService(this));
         Services.INSTANCE.set(NuminousProfessionService.class, new NuminousProfessionService(this, characterProfessionRepository));
         Services.INSTANCE.set(NuminousRecipeService.class, new NuminousRecipeService(this));
+        Services.INSTANCE.set(NuminousStaminaService.class, new NuminousStaminaService(this, characterStaminaRepository));
+        Services.INSTANCE.set(NuminousDropTableService.class, new NuminousDropTableService(this));
+        Services.INSTANCE.set(NuminousNodeService.class, new NuminousNodeService(this, nodeRepository));
+        Services.INSTANCE.set(NuminousInteractionService.class, new NuminousInteractionService(this));
 
         registerListeners(
                 new AsyncPlayerPreLoginListener(this),
+                new BlockBreakListener(this),
                 new InventoryClickListener(),
                 new PlayerInteractListener(this),
                 new PlayerItemConsumeListener(),
-                new PlayerQuitListener(this)
+                new PlayerMoveListener(),
+                new PlayerQuitListener(this),
+                new RPKCharacterSwitchListener()
         );
 
         getCommand("profession").setExecutor(new ProfessionCommand());
         getCommand("numinousitem").setExecutor(new NuminousItemCommand());
+        getCommand("stamina").setExecutor(new StaminaCommand(this));
+        getCommand("node").setExecutor(new NodeCommand(this));
+
+        Duration staminaRestorationInterval = Duration.parse(getConfig().getString("stamina.restoration-interval"));
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
+            Map<String, Integer> previousStamina = new HashMap<>();
+            getServer().getOnlinePlayers().forEach(player -> previousStamina.put(player.getUniqueId().toString(), staminaService.getStamina(player)));
+            staminaService.restoreStamina(() -> getServer().getOnlinePlayers().forEach(player -> {
+                int oldStamina = previousStamina.get(player.getUniqueId().toString());
+                int newStamina = staminaService.getStamina(player);
+                String transitionMessage = StaminaTier.messageForStaminaTransition(oldStamina, newStamina, getConfig().getInt("stamina.max"));
+                if (transitionMessage != null) {
+                    player.sendMessage(transitionMessage);
+                }
+            }));
+        }, (staminaRestorationInterval.toSeconds() * 20L) / 2, staminaRestorationInterval.toSeconds() * 20L);
     }
 
     private void registerListeners(Listener... listeners) {

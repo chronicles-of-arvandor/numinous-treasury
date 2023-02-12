@@ -7,6 +7,7 @@ import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfile;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfileService;
 import net.kingdommc.darkages.numinoustreasury.NuminousTreasury;
 import net.kingdommc.darkages.numinoustreasury.profession.NuminousProfessionService;
+import net.kingdommc.darkages.numinoustreasury.stamina.NuminousStaminaService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -38,6 +39,8 @@ public final class PlayerQuitListener implements Listener {
                 if (!minecraftProfile.isOnline()) {
                     NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
                     professionService.unload(character);
+                    NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
+                    staminaService.unload(character);
                 }
             });
         });

@@ -1,13 +1,16 @@
 package net.kingdommc.darkages.numinoustreasury.item;
 
 public enum NuminousItemCategory {
+    ARMOUR,
+    WEAPON,
+    AMMUNITION,
+    POTION,
+    MINING,
+    TOOL,
+    FURNITURE,
+    REFINED_PART,
     FLORA,
     FAUNA,
-    ARTIFACT,
-    RAW_MATERIAL,
-    REFINED,
-    PART,
-    WEAPON,
-    ARMOUR,
+    FOOD,
     SOURCE
 }

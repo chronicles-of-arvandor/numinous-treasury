@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static net.md_5.bungee.api.ChatColor.*;
+import static org.bukkit.inventory.ItemFlag.*;
 
 @SerializableAs("NuminousRecipe")
 public final class NuminousRecipe implements ConfigurationSerializable {
@@ -24,26 +26,26 @@ public final class NuminousRecipe implements ConfigurationSerializable {
     private final String name;
     private final List<NuminousItemStack> ingredients;
     private final List<NuminousItemStack> results;
-    private final NuminousProfession requiredProfession;
-    private final int requiredProfessionLevel;
+    private final Map<NuminousProfession, Integer> requiredProfessionLevel;
     private final int experience;
+    private final int stamina;
     private final Material workstation;
     private final Material iconMaterial;
 
     public NuminousRecipe(String name,
                           List<NuminousItemStack> ingredients,
                           List<NuminousItemStack> results,
-                          NuminousProfession requiredProfession,
-                          int requiredProfessionLevel,
+                          Map<NuminousProfession, Integer> requiredProfessionLevel,
                           int experience,
+                          int stamina,
                           Material workstation,
                           Material iconMaterial) {
         this.name = name;
         this.ingredients = ingredients;
         this.results = results;
-        this.requiredProfession = requiredProfession;
         this.requiredProfessionLevel = requiredProfessionLevel;
         this.experience = experience;
+        this.stamina = stamina;
         this.workstation = workstation;
         this.iconMaterial = iconMaterial;
     }
@@ -60,16 +62,20 @@ public final class NuminousRecipe implements ConfigurationSerializable {
         return results;
     }
 
-    public NuminousProfession getRequiredProfession() {
-        return requiredProfession;
+    public List<NuminousProfession> getApplicableProfessions() {
+        return requiredProfessionLevel.keySet().stream().toList();
     }
 
-    public int getRequiredProfessionLevel() {
-        return requiredProfessionLevel;
+    public Integer getRequiredProfessionLevel(NuminousProfession profession) {
+        return requiredProfessionLevel.get(profession);
     }
 
     public int getExperience() {
         return experience;
+    }
+
+    public int getStamina() {
+        return stamina;
     }
 
     public Material getWorkstation() {
@@ -77,6 +83,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
     }
 
     public ItemStack getIcon(Player player) {
+        NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
         boolean professionRequirementsMet = isProfessionRequirementsMet(player);
         boolean ingredientRequirementsMet = isIngredientRequirementsMet(player);
         boolean craftable = professionRequirementsMet && ingredientRequirementsMet;
@@ -98,11 +105,27 @@ public final class NuminousRecipe implements ConfigurationSerializable {
             lore.add("");
             lore.add(BOLD.toString() + WHITE + "Results:");
             for (NuminousItemStack result : getResults()) {
-                lore.add("• " + result.getItemType().getName() + " × " + result.getAmount());
+                lore.add(GRAY + "• " + result.getItemType().getName() + " × " + result.getAmount());
             }
             lore.add("");
-            lore.add(BOLD.toString() + WHITE + "Required profession: " + RESET + (professionRequirementsMet ? GREEN : RED) + "Lv" + getRequiredProfessionLevel() + " " + getRequiredProfession().getName());
+            lore.add(BOLD.toString() + WHITE + "Required profession: ");
+            getApplicableProfessions().forEach(profession -> {
+                NuminousProfession playerProfession = professionService.getProfession(player);
+                boolean isThisProfessionRequirementMet = playerProfession != null
+                        && playerProfession.getId().equals(profession.getId())
+                        && professionService.getProfessionLevel(player) >= getRequiredProfessionLevel(profession);
+                lore.add((isThisProfessionRequirementMet ? GREEN : RED) + "• Lv" + getRequiredProfessionLevel(profession) + " " + profession.getName());
+            });
             meta.setLore(lore);
+            meta.addItemFlags(
+                    HIDE_ENCHANTS,
+                    HIDE_ATTRIBUTES,
+                    HIDE_UNBREAKABLE,
+                    HIDE_DESTROYS,
+                    HIDE_PLACED_ON,
+                    HIDE_POTION_EFFECTS,
+                    HIDE_DYE
+            );
         }
         icon.setItemMeta(meta);
         return icon;
@@ -139,9 +162,10 @@ public final class NuminousRecipe implements ConfigurationSerializable {
     public boolean isProfessionRequirementsMet(Player player) {
         NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
         NuminousProfession profession = professionService.getProfession(player);
+        if (profession == null) return false;
         int professionLevel = professionService.getProfessionLevel(player);
-        return getRequiredProfession().equals(profession)
-                && professionLevel >= getRequiredProfessionLevel();
+        return getApplicableProfessions().stream().anyMatch((applicableProfession) -> applicableProfession.getId().equals(profession.getId()))
+                && professionLevel >= getRequiredProfessionLevel(profession);
     }
 
     public boolean isIngredientRequirementsMet(Player player) {
@@ -161,9 +185,13 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                 "name", getName(),
                 "ingredients", getIngredients(),
                 "results", getResults(),
-                "required-profession", getRequiredProfession().getId(),
-                "required-profession-level", getRequiredProfessionLevel(),
+                "required-profession-level", getApplicableProfessions().stream()
+                        .collect(Collectors.toMap(
+                                NuminousProfession::getId,
+                                this::getRequiredProfessionLevel
+                        )),
                 "experience", getExperience(),
+                "stamina", getStamina(),
                 "workstation", getWorkstation().name(),
                 "icon", iconMaterial.name()
         );
@@ -175,9 +203,16 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                 (String) serialized.get("name"),
                 (List<NuminousItemStack>) serialized.get("ingredients"),
                 (List<NuminousItemStack>) serialized.get("results"),
-                professionService.getProfessionById((String) serialized.get("required-profession")),
-                (Integer) serialized.get("required-profession-level"),
+                ((Map<String, Integer>) serialized.get("required-profession-level")).entrySet().stream()
+                        .map(entry -> Map.entry(
+                                professionService.getProfessionById(entry.getKey()),
+                                entry.getValue()
+                        )).collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue
+                        )),
                 (Integer) serialized.get("experience"),
+                (Integer) serialized.get("stamina"),
                 Material.valueOf((String) serialized.get("workstation")),
                 Material.valueOf((String) serialized.get("icon"))
         );

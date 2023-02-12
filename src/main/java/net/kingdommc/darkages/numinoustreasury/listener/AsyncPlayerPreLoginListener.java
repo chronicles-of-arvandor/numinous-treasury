@@ -7,6 +7,7 @@ import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfile;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfileService;
 import net.kingdommc.darkages.numinoustreasury.NuminousTreasury;
 import net.kingdommc.darkages.numinoustreasury.profession.NuminousProfessionService;
+import net.kingdommc.darkages.numinoustreasury.stamina.NuminousStaminaService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -33,8 +34,13 @@ public final class AsyncPlayerPreLoginListener implements Listener {
             return;
         }
         RPKCharacter character = characterService.getActiveCharacter(minecraftProfile).join();
+        if (character == null) return;
+
         NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
         professionService.load(character);
+
+        NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
+        staminaService.load(character);
     }
 
 }

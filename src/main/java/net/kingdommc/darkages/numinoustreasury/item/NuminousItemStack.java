@@ -23,6 +23,10 @@ public final class NuminousItemStack implements ConfigurationSerializable {
         this.amount = amount;
     }
 
+    public NuminousItemStack(NuminousItemType itemType) {
+        this(itemType, 1);
+    }
+
     public NuminousItemType getItemType() {
         return itemType;
     }

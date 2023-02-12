@@ -56,7 +56,7 @@ public final class Weight implements Comparable<Weight>, ConfigurationSerializab
         );
     }
 
-    public static Weight deserialized(Map<String, Object> serialized) {
+    public static Weight deserialize(Map<String, Object> serialized) {
         return new Weight(
                 (Double) serialized.get("value"),
                 WeightUnit.getByName((String) serialized.get("unit"))
