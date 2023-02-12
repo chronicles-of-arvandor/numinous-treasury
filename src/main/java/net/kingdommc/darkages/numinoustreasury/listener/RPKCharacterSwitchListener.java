@@ -7,7 +7,7 @@ import net.kingdommc.darkages.numinoustreasury.stamina.NuminousStaminaService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class RPKCharacterSwitchListener implements Listener {
+public final class RPKCharacterSwitchListener implements Listener {
 
     @EventHandler
     public void onCharacterSwitch(RPKBukkitCharacterSwitchEvent event) {

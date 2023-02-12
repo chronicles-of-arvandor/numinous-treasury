@@ -50,7 +50,7 @@ public final class StaminaCommand implements CommandExecutor, TabCompleter {
         if (args.length < 1) {
             return subcommands;
         } else if (args.length == 1) {
-            return subcommands.stream().filter(subcommand -> subcommand.startsWith(args[0])).toList();
+            return subcommands.stream().filter(subcommand -> subcommand.startsWith(args[0].toLowerCase())).toList();
         } else {
             if (viewAliases.contains(args[0].toLowerCase())) {
                 return staminaViewCommand.onTabComplete(sender, command, label, Arrays.stream(args).skip(1).toArray(String[]::new));
