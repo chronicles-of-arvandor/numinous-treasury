@@ -28,6 +28,8 @@ public final class AsyncPlayerPreLoginListener implements Listener {
             return;
         }
         RPKMinecraftProfile minecraftProfile = minecraftProfileService.getMinecraftProfile(event.getUniqueId()).join();
+        if (minecraftProfile == null) return;
+
         RPKCharacterService characterService = Services.INSTANCE.get(RPKCharacterService.class);
         if (characterService == null) {
             plugin.getLogger().info("No character service found. Could not load profession info.");
