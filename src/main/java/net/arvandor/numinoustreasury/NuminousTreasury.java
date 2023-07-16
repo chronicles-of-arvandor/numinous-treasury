@@ -132,6 +132,13 @@ public final class NuminousTreasury extends JavaPlugin {
                 new RPKCharacterSwitchListener()
         );
 
+        if (getServer().getPluginManager().getPlugin("Votifier") != null) {
+            getLogger().info("Detected Votifier, listening for votes.");
+            getServer().getPluginManager().registerEvents(new VoteListener(this), this);
+        } else {
+            getLogger().info("Did not detect Votifier, vote support disabled.");
+        }
+
         getCommand("profession").setExecutor(new ProfessionCommand());
         getCommand("numinousitem").setExecutor(new NuminousItemCommand());
         getCommand("stamina").setExecutor(new StaminaCommand(this));
@@ -145,7 +152,7 @@ public final class NuminousTreasury extends JavaPlugin {
             staminaService.restoreStamina(() -> getServer().getOnlinePlayers().forEach(player -> {
                 int oldStamina = previousStamina.get(player.getUniqueId().toString());
                 int newStamina = staminaService.getStamina(player);
-                String transitionMessage = StaminaTier.messageForStaminaTransition(oldStamina, newStamina, getConfig().getInt("stamina.max"));
+                String transitionMessage = StaminaTier.messageForStaminaTransition(oldStamina, newStamina, staminaService.getMaxStamina());
                 if (transitionMessage != null) {
                     player.sendMessage(transitionMessage);
                 }

@@ -132,9 +132,9 @@ public final class NuminousProfessionService implements Service {
     public void addProfessionExperience(RPKCharacter character, int experience, ExperienceUpdateCallback callback) {
         int experienceForMaxLevel = getExperienceForLevel(getMaxLevel());
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            repository.getAndUpdate(character.getId(), (dsl, oldExperience) -> repository.setProfessionExperience(dsl, character.getId(), Math.min(oldExperience + experience, experienceForMaxLevel)), (newExperience) -> {
+            repository.getAndUpdate(character.getId(), (dsl, oldExperience) -> repository.setProfessionExperience(dsl, character.getId(), Math.min(oldExperience + experience, experienceForMaxLevel)), (oldExperience, newExperience) -> {
                 characterProfessionExperience.put(character.getId().getValue(), newExperience);
-                callback.invoke(newExperience);
+                callback.invoke(oldExperience, newExperience);
             });
         });
     }

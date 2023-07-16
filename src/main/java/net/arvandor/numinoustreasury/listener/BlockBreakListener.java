@@ -1,14 +1,16 @@
 package net.arvandor.numinoustreasury.listener;
 
+import static net.md_5.bungee.api.ChatColor.*;
+
 import com.rpkit.core.service.Services;
-import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
-import net.arvandor.numinoustreasury.stamina.StaminaTier;
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.droptable.NuminousDropTableItem;
 import net.arvandor.numinoustreasury.node.NuminousNode;
 import net.arvandor.numinoustreasury.node.NuminousNodeService;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
+import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.arvandor.numinoustreasury.stamina.NuminousStaminaService;
+import net.arvandor.numinoustreasury.stamina.StaminaTier;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,8 +21,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.List;
 import java.util.Random;
-
-import static net.md_5.bungee.api.ChatColor.*;
 
 public final class BlockBreakListener implements Listener {
 
@@ -98,10 +98,9 @@ public final class BlockBreakListener implements Listener {
                                 event.getPlayer().sendMessage(RED + "Try as you might, you weren't able to retrieve anything yet. Perhaps if you try again?");
                             }
                             int maxLevel = professionService.getMaxLevel();
-                            int oldExperience = professionService.getProfessionExperience(event.getPlayer());
-                            int oldLevel = professionService.getLevelAtExperience(oldExperience);
-                            professionService.addProfessionExperience(event.getPlayer(), node.getExperience(), (newExperience) -> {
+                            professionService.addProfessionExperience(event.getPlayer(), node.getExperience(), (oldExperience, newExperience) -> {
                                 plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                    int oldLevel = professionService.getLevelAtExperience(oldExperience);
                                     int newLevel = professionService.getLevelAtExperience(newExperience);
                                     int experienceSinceLastLevel = newExperience - (newLevel > 1 ? professionService.getTotalExperienceForLevel(newLevel) : 0);
                                     int experienceRequiredForNextLevel = professionService.getExperienceForLevel(newLevel + 1);
@@ -128,7 +127,7 @@ public final class BlockBreakListener implements Listener {
                         });
                     },
                     (oldStamina, newStamina) -> {
-                        int maxStamina = plugin.getConfig().getInt("stamina.max");
+                        int maxStamina = staminaService.getMaxStamina();
                         String message = StaminaTier.messageForStaminaTransition(oldStamina, newStamina, maxStamina);
                         if (message != null) {
                             event.getPlayer().sendMessage(message);

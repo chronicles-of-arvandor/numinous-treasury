@@ -1,13 +1,16 @@
 package net.arvandor.numinoustreasury.command.stamina;
 
+import static net.md_5.bungee.api.ChatColor.GREEN;
+import static net.md_5.bungee.api.ChatColor.RED;
+
 import com.rpkit.characters.bukkit.character.RPKCharacter;
 import com.rpkit.characters.bukkit.character.RPKCharacterService;
 import com.rpkit.core.service.Services;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfile;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfileService;
-import net.arvandor.numinoustreasury.stamina.StaminaTier;
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.stamina.NuminousStaminaService;
+import net.arvandor.numinoustreasury.stamina.StaminaTier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +18,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-
-import static net.md_5.bungee.api.ChatColor.GREEN;
-import static net.md_5.bungee.api.ChatColor.RED;
 
 public class StaminaSetCommand implements CommandExecutor, TabCompleter {
     private final NuminousTreasury plugin;
@@ -69,7 +69,15 @@ public class StaminaSetCommand implements CommandExecutor, TabCompleter {
         }
         NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
         int oldStamina = staminaService.getStamina(target);
-        int maxStamina = plugin.getConfig().getInt("stamina.max");
+        int maxStamina = staminaService.getMaxStamina();
+        if (newStamina > maxStamina) {
+            sender.sendMessage(RED + "Stamina cannot be higher than " + maxStamina + ".");
+            return true;
+        }
+        if (newStamina < 0) {
+            sender.sendMessage(RED + "Stamina cannot be lower than 0.");
+            return true;
+        }
         String staminaTransitionMessage = StaminaTier.messageForStaminaTransition(oldStamina, newStamina, maxStamina);
         final Player finalTarget = target;
         RPKMinecraftProfileService minecraftProfileService = Services.INSTANCE.get(RPKMinecraftProfileService.class);

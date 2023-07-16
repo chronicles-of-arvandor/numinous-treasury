@@ -1,12 +1,15 @@
 package net.arvandor.numinoustreasury.workstation;
 
+import static net.md_5.bungee.api.ChatColor.*;
+import static org.bukkit.Material.PAPER;
+
 import com.rpkit.core.service.Services;
 import net.arvandor.numinoustreasury.NuminousTreasury;
+import net.arvandor.numinoustreasury.profession.NuminousProfession;
 import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.arvandor.numinoustreasury.recipe.NuminousRecipe;
 import net.arvandor.numinoustreasury.stamina.NuminousStaminaService;
 import net.arvandor.numinoustreasury.stamina.StaminaTier;
-import net.arvandor.numinoustreasury.profession.NuminousProfession;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,10 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Random;
-
-import static net.md_5.bungee.api.ChatColor.*;
-import static net.md_5.bungee.api.ChatColor.YELLOW;
-import static org.bukkit.Material.PAPER;
 
 public final class WorkstationInterface implements InventoryHolder {
 
@@ -158,10 +157,9 @@ public final class WorkstationInterface implements InventoryHolder {
 
                                     NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
                                     int maxLevel = professionService.getMaxLevel();
-                                    int oldExperience = professionService.getProfessionExperience(player);
-                                    int oldLevel = professionService.getLevelAtExperience(oldExperience);
-                                    professionService.addProfessionExperience(player, recipe.getExperience(), (newExperience) -> {
+                                    professionService.addProfessionExperience(player, recipe.getExperience(), (oldExperience, newExperience) -> {
                                         plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                            int oldLevel = professionService.getLevelAtExperience(oldExperience);
                                             int newLevel = professionService.getLevelAtExperience(newExperience);
                                             int experienceSinceLastLevel = newExperience - (newLevel > 1 ? professionService.getTotalExperienceForLevel(newLevel) : 0);
                                             int experienceRequiredForNextLevel = professionService.getExperienceForLevel(newLevel + 1);
@@ -189,7 +187,7 @@ public final class WorkstationInterface implements InventoryHolder {
                                 });
                             },
                             (oldStamina, newStamina) -> {
-                                int maxStamina = plugin.getConfig().getInt("stamina.max");
+                                int maxStamina = staminaService.getMaxStamina();
                                 String message = StaminaTier.messageForStaminaTransition(oldStamina, newStamina, maxStamina);
                                 if (message != null) {
                                     player.sendMessage(message);

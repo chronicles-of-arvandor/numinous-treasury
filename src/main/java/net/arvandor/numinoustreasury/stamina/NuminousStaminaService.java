@@ -7,6 +7,7 @@ import com.rpkit.core.service.Services;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfile;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfileService;
 import net.arvandor.numinoustreasury.NuminousTreasury;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jooq.DSLContext;
 
@@ -20,16 +21,22 @@ public final class NuminousStaminaService implements Service {
     private final NuminousTreasury plugin;
     private final NuminousCharacterStaminaRepository staminaRepository;
     private final Map<Integer, Integer> characterStamina;
+    private final int maxStamina;
 
     public NuminousStaminaService(NuminousTreasury plugin, NuminousCharacterStaminaRepository staminaRepository) {
         this.plugin = plugin;
         this.staminaRepository = staminaRepository;
         this.characterStamina = new ConcurrentHashMap<>();
+        this.maxStamina = plugin.getConfig().getInt("stamina.max");
     }
 
     @Override
     public NuminousTreasury getPlugin() {
         return plugin;
+    }
+
+    public int getMaxStamina() {
+        return maxStamina;
     }
 
     public int getStamina(RPKCharacter character) {
@@ -42,7 +49,7 @@ public final class NuminousStaminaService implements Service {
         return getStamina(character);
     }
 
-    public void getAndUpdateStamina(Player player, StaminaUpdateFunction function, StaminaUpdateCallback callback) {
+    public void getAndUpdateStamina(OfflinePlayer player, StaminaUpdateFunction function, StaminaUpdateCallback callback) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return;
         getAndUpdateStamina(character, function, callback);
@@ -59,7 +66,7 @@ public final class NuminousStaminaService implements Service {
         });
     }
 
-    public void setStamina(Player player, int stamina, Runnable callback) {
+    public void setStamina(OfflinePlayer player, int stamina, Runnable callback) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return;
         setStamina(character, stamina, callback);
@@ -73,7 +80,7 @@ public final class NuminousStaminaService implements Service {
         });
     }
 
-    public void setStamina(DSLContext dsl, Player player, int stamina) {
+    public void setStamina(DSLContext dsl, OfflinePlayer player, int stamina) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return;
         setStamina(dsl, character, stamina);
@@ -101,7 +108,7 @@ public final class NuminousStaminaService implements Service {
         });
     }
 
-    private RPKCharacter getRpkCharacter(Player player) {
+    private RPKCharacter getRpkCharacter(OfflinePlayer player) {
         RPKMinecraftProfileService minecraftProfileService = Services.INSTANCE.get(RPKMinecraftProfileService.class);
         if (minecraftProfileService == null) return null;
         RPKMinecraftProfile minecraftProfile = minecraftProfileService.getPreloadedMinecraftProfile(player);

@@ -15,6 +15,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
     maven { url = 'https://repo.rpkit.com/repository/maven-public/' }
+    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
@@ -27,6 +28,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql:9.4.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
     implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'com.github.NuVotifier:NuVotifier:2.7.2'
     jooqGenerator 'org.jooq:jooq-meta-extensions:3.17.6'
 }
 

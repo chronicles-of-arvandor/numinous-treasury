@@ -1,13 +1,16 @@
 package net.arvandor.numinoustreasury.command.stamina;
 
+import static net.md_5.bungee.api.ChatColor.GRAY;
+import static net.md_5.bungee.api.ChatColor.RED;
+
 import com.rpkit.characters.bukkit.character.RPKCharacter;
 import com.rpkit.characters.bukkit.character.RPKCharacterService;
 import com.rpkit.core.service.Services;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfile;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfileService;
-import net.arvandor.numinoustreasury.stamina.StaminaTier;
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.stamina.NuminousStaminaService;
+import net.arvandor.numinoustreasury.stamina.StaminaTier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +18,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-
-import static net.md_5.bungee.api.ChatColor.GRAY;
-import static net.md_5.bungee.api.ChatColor.RED;
 
 public class StaminaViewCommand implements CommandExecutor, TabCompleter {
 
@@ -54,7 +54,7 @@ public class StaminaViewCommand implements CommandExecutor, TabCompleter {
         }
         NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
         int stamina = staminaService.getStamina(target);
-        StaminaTier tier = StaminaTier.forStamina(stamina, plugin.getConfig().getInt("stamina.max"));
+        StaminaTier tier = StaminaTier.forStamina(stamina, staminaService.getMaxStamina());
         if (target == sender) {
             sender.sendMessage(tier.getMessageSelf());
             if (sender.hasPermission("numinoustreasury.command.stamina.view.precise")) {

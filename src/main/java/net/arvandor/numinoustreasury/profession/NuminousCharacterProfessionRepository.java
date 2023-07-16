@@ -1,11 +1,11 @@
 package net.arvandor.numinoustreasury.profession;
 
+import static net.arvandor.numinoustreasury.jooq.Tables.NUMINOUS_CHARACTER_PROFESSION;
+
 import com.rpkit.characters.bukkit.character.RPKCharacterId;
 import org.jooq.DSLContext;
 
 import java.util.Objects;
-
-import static net.arvandor.numinoustreasury.jooq.Tables.NUMINOUS_CHARACTER_PROFESSION;
 
 public final class NuminousCharacterProfessionRepository {
 
@@ -57,7 +57,7 @@ public final class NuminousCharacterProfessionRepository {
                     .from(NUMINOUS_CHARACTER_PROFESSION)
                     .where(NUMINOUS_CHARACTER_PROFESSION.CHARACTER_ID.eq(characterId.getValue()))
                     .fetchOne(NUMINOUS_CHARACTER_PROFESSION.EXPERIENCE);
-            callback.invoke(Objects.requireNonNullElse(newExperience, 0));
+            callback.invoke(Objects.requireNonNullElse(experience, 0), Objects.requireNonNullElse(newExperience, 0));
         });
     }
 
