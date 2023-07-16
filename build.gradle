@@ -18,10 +18,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
-    implementation 'com.rpkit:rpk-core-bukkit:2.4.1:all'
-    implementation 'com.rpkit:rpk-player-lib-bukkit:2.4.1:all'
-    implementation 'com.rpkit:rpk-character-lib-bukkit:2.4.1:all'
+    implementation 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
+    implementation 'com.rpkit:rpk-core-bukkit:2.4.2:all'
+    implementation 'com.rpkit:rpk-player-lib-bukkit:2.4.2:all'
+    implementation 'com.rpkit:rpk-character-lib-bukkit:2.4.2:all'
     implementation 'org.jooq:jooq:3.17.6'
     implementation 'org.flywaydb:flyway-core:9.4.0'
     implementation 'org.flywaydb:flyway-mysql:9.4.0'
