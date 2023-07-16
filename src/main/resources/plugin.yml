@@ -1,7 +1,7 @@
 name: numinous-treasury
 author: alyphen
 version: @version@
-main: net.kingdommc.darkages.numinoustreasury.NuminousTreasury
+main: net.arvandor.numinoustreasury.NuminousTreasury
 api-version: '1.19'
 depend:
 - rpk-core-bukkit

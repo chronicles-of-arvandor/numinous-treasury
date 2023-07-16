@@ -1,4 +1,4 @@
 Numinous Treasury
 =================
 
-Custom items plugin for Kingdom: Dark Ages
+Custom items plugin for Chronicles of Arvandor

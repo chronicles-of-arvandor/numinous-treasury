@@ -8,7 +8,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'net.kingdommc.darkages'
+group 'net.arvandor'
 version '0.5.0-SNAPSHOT'
 
 repositories {
@@ -45,7 +45,7 @@ jooq {
                         properties {
                             property {
                                 key = 'scripts'
-                                value = 'src/main/resources/net/kingdommc/darkages/numinoustreasury/db/migration'
+                                value = 'src/main/resources/net/arvandor/numinoustreasury/db/migration'
                             }
                             property {
                                 key = 'sort'
@@ -58,7 +58,7 @@ jooq {
                         }
                     }
                     target {
-                        packageName = 'net.kingdommc.darkages.numinoustreasury.jooq'
+                        packageName = 'net.arvandor.numinoustreasury.jooq'
                     }
                 }
             }
@@ -98,18 +98,18 @@ shadowJar {
         include(dependency('com.dansplugins:ponder-commands'))
     }
 
-    relocate 'com.google', 'net.kingdommc.darkages.numinoustreasury.shadow.com.google'
-    relocate 'org.mariadb', 'net.kingdommc.darkages.numinoustreasury.shadow.org.mariadb'
-    relocate 'com.sun', 'net.kingdommc.darkages.numinoustreasury.shadow.com.sun'
-    relocate 'com.zaxxer', 'net.kingdommc.darkages.numinoustreasury.shadow.com.zaxxer'
-    relocate 'google', 'net.kingdommc.darkages.numinoustreasury.shadow.google'
-    relocate 'io.r2dbc', 'net.kingdommc.darkages.numinoustreasury.shadow.io.r2dbc'
-    relocate 'jakarta', 'net.kingdommc.darkages.numinoustreasury.shadow.jakarta'
-    relocate 'org.flywaydb', 'net.kingdommc.darkages.numinoustreasury.shadow.org.flywaydb'
-    relocate 'org.intellij', 'net.kingdommc.darkages.numinoustreasury.shadow.org.intellij'
-    relocate 'org.jetbrains', 'net.kingdommc.darkages.numinoustreasury.shadow.org.jetbrains'
-    relocate 'org.jooq', 'net.kingdommc.darkages.numinoustreasury.shadow.org.jooq'
-    relocate 'org.reactivestreams', 'net.kingdommc.darkages.numinoustreasury.shadow.org.reactivestreams'
+    relocate 'com.google', 'net.arvandor.numinoustreasury.shadow.com.google'
+    relocate 'org.mariadb', 'net.arvandor.numinoustreasury.shadow.org.mariadb'
+    relocate 'com.sun', 'net.arvandor.numinoustreasury.shadow.com.sun'
+    relocate 'com.zaxxer', 'net.arvandor.numinoustreasury.shadow.com.zaxxer'
+    relocate 'google', 'net.arvandor.numinoustreasury.shadow.google'
+    relocate 'io.r2dbc', 'net.arvandor.numinoustreasury.shadow.io.r2dbc'
+    relocate 'jakarta', 'net.arvandor.numinoustreasury.shadow.jakarta'
+    relocate 'org.flywaydb', 'net.arvandor.numinoustreasury.shadow.org.flywaydb'
+    relocate 'org.intellij', 'net.arvandor.numinoustreasury.shadow.org.intellij'
+    relocate 'org.jetbrains', 'net.arvandor.numinoustreasury.shadow.org.jetbrains'
+    relocate 'org.jooq', 'net.arvandor.numinoustreasury.shadow.org.jooq'
+    relocate 'org.reactivestreams', 'net.arvandor.numinoustreasury.shadow.org.reactivestreams'
 }
 
 artifacts {
@@ -130,7 +130,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/kingdom-dark-ages/numinous-treasury/")
+            url = uri("https://maven.pkg.github.com/chronicles-of-arvandor/numinous-treasury/")
             credentials {
                 username = githubUsername
                 password = githubToken
