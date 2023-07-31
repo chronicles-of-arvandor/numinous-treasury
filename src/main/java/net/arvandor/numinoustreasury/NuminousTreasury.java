@@ -139,7 +139,7 @@ public final class NuminousTreasury extends JavaPlugin {
             getLogger().info("Did not detect Votifier, vote support disabled.");
         }
 
-        getCommand("profession").setExecutor(new ProfessionCommand());
+        getCommand("profession").setExecutor(new ProfessionCommand(this));
         getCommand("numinousitem").setExecutor(new NuminousItemCommand());
         getCommand("stamina").setExecutor(new StaminaCommand(this));
         getCommand("node").setExecutor(new NodeCommand(this));

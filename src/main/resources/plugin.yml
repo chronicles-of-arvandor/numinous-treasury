@@ -7,6 +7,7 @@ depend:
 - rpk-core-bukkit
 - rpk-player-lib-bukkit
 - rpk-character-lib-bukkit
+- rpk-notification-lib-bukkit
 softdepend:
 - Votifier
 commands:

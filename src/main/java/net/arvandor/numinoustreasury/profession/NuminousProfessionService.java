@@ -9,8 +9,8 @@ import com.rpkit.core.service.Services;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfile;
 import com.rpkit.players.bukkit.profile.minecraft.RPKMinecraftProfileService;
 import net.arvandor.numinoustreasury.NuminousTreasury;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public final class NuminousProfessionService implements Service {
         return professions;
     }
 
-    public NuminousProfession getProfession(Player player) {
+    public NuminousProfession getProfession(OfflinePlayer player) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return null;
         return getProfession(character);
@@ -74,7 +74,7 @@ public final class NuminousProfessionService implements Service {
         return getProfessionById(professionId);
     }
 
-    public void setProfession(Player player, NuminousProfession profession, Runnable callback) {
+    public void setProfession(OfflinePlayer player, NuminousProfession profession, Runnable callback) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return;
         setProfession(character, profession, callback);
@@ -89,7 +89,7 @@ public final class NuminousProfessionService implements Service {
         });
     }
 
-    public int getProfessionLevel(Player player) {
+    public int getProfessionLevel(OfflinePlayer player) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return 0;
         return getProfessionLevel(character);
@@ -99,19 +99,19 @@ public final class NuminousProfessionService implements Service {
         return getLevelAtExperience(getProfessionExperience(character));
     }
 
-    public int getProfessionExperience(Player player) {
+    public int getProfessionExperience(OfflinePlayer player) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return 0;
         return getProfessionExperience(character);
     }
 
-    public void setProfessionExperience(Player player, int experience, Runnable callback) {
+    public void setProfessionExperience(OfflinePlayer player, int experience, Runnable callback) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return;
         setProfessionExperience(character, experience, callback);
     }
 
-    public void addProfessionExperience(Player player, int experience, ExperienceUpdateCallback callback) {
+    public void addProfessionExperience(OfflinePlayer player, int experience, ExperienceUpdateCallback callback) {
         RPKCharacter character = getRpkCharacter(player);
         if (character == null) return;
         addProfessionExperience(character, experience, callback);
@@ -183,7 +183,7 @@ public final class NuminousProfessionService implements Service {
         characterProfessionExperience.remove(character.getId().getValue());
     }
 
-    private RPKCharacter getRpkCharacter(Player player) {
+    private RPKCharacter getRpkCharacter(OfflinePlayer player) {
         RPKMinecraftProfileService minecraftProfileService = Services.INSTANCE.get(RPKMinecraftProfileService.class);
         if (minecraftProfileService == null) return null;
         RPKMinecraftProfile minecraftProfile = minecraftProfileService.getPreloadedMinecraftProfile(player);
