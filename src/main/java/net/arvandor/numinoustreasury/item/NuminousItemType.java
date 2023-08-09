@@ -1,10 +1,14 @@
 package net.arvandor.numinoustreasury.item;
 
+import static java.util.Map.entry;
+import static net.md_5.bungee.api.ChatColor.GRAY;
+import static org.bukkit.persistence.PersistentDataType.STRING;
+
+import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.item.action.NuminousOnEat;
 import net.arvandor.numinoustreasury.item.action.NuminousOnInteractAir;
 import net.arvandor.numinoustreasury.item.action.NuminousOnInteractBlock;
 import net.arvandor.numinoustreasury.measurement.Weight;
-import net.arvandor.numinoustreasury.NuminousTreasury;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -15,17 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Map.entry;
-import static net.md_5.bungee.api.ChatColor.GRAY;
-import static org.bukkit.persistence.PersistentDataType.STRING;
-
 @SerializableAs("NuminousItemType")
 public final class NuminousItemType implements ConfigurationSerializable, Comparable<NuminousItemType> {
 
     private final NuminousTreasury plugin;
     private final String id;
     private final String name;
-    private final NuminousItemCategory category;
+    private final List<NuminousItemCategory> categories;
     private final NuminousRarity rarity;
     private final ItemStack minecraftItem;
     private final List<NuminousOnEat> onEat;
@@ -36,7 +36,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
     public NuminousItemType(NuminousTreasury plugin,
                             String id,
                             String name,
-                            NuminousItemCategory category,
+                            List<NuminousItemCategory> categories,
                             NuminousRarity rarity,
                             ItemStack minecraftItem,
                             List<NuminousOnEat> onEat,
@@ -46,7 +46,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         this.plugin = plugin;
         this.id = id;
         this.name = name;
-        this.category = category;
+        this.categories = categories;
         this.rarity = rarity;
         this.minecraftItem = minecraftItem;
         this.onEat = onEat;
@@ -63,8 +63,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         return name;
     }
 
-    public NuminousItemCategory getCategory() {
-        return category;
+    public List<NuminousItemCategory> getCategories() {
+        return categories;
     }
 
     public NuminousRarity getRarity() {
@@ -128,7 +128,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         return Map.ofEntries(
                 entry("id", getId()),
                 entry("name", getName()),
-                entry("category", getCategory().name()),
+                entry("categories", getCategories().stream().map(NuminousItemCategory::name).toList()),
                 entry("rarity", getRarity().name()),
                 entry("minecraft-item", getMinecraftItem()),
                 entry("on-eat", getOnEat()),
@@ -143,7 +143,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 (NuminousTreasury) Bukkit.getPluginManager().getPlugin("numinous-treasury"),
                 (String) serialized.get("id"),
                 (String) serialized.get("name"),
-                NuminousItemCategory.valueOf((String) serialized.get("category")),
+                ((List<String>) serialized.get("categories")).stream().map(NuminousItemCategory::valueOf).toList(),
                 NuminousRarity.valueOf((String) serialized.get("rarity")),
                 (ItemStack) serialized.get("minecraft-item"),
                 (List<NuminousOnEat>) serialized.get("on-eat"),

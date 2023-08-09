@@ -1,16 +1,27 @@
 package net.arvandor.numinoustreasury.item;
 
 public enum NuminousItemCategory {
-    ARMOUR,
-    WEAPON,
+    ADVENTURING_GEAR,
     AMMUNITION,
+    ARTISANS_TOOLS,
+    FIREARM,
+    FOOD_AND_DRINK,
+    GAMING_SET,
+    HEAVY_ARMOUR,
+    INSTRUMENT,
+    LIGHT_ARMOUR,
+    MARTIAL_WEAPON,
+    MEDIUM_ARMOUR,
+    MOUNT,
     POTION,
-    MINING,
-    TOOL,
-    FURNITURE,
-    REFINED_PART,
-    FLORA,
-    FAUNA,
-    FOOD,
-    SOURCE
+    SHIELD,
+    SIMPLE_WEAPON,
+    SPELLCASTING_FOCUS,
+    TACK_AND_HARNESS,
+    TOOLS,
+    TRADE_GOOD,
+    VEHICLE_LAND,
+    WAND,
+    WONDROUS_ITEM,
+    CRAFTING_MATERIAL
 }
