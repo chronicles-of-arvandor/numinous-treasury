@@ -1,5 +1,9 @@
 package net.arvandor.numinoustreasury.item;
 
+import static java.util.logging.Level.SEVERE;
+import static org.bukkit.Material.APPLE;
+import static org.bukkit.inventory.ItemFlag.HIDE_ATTRIBUTES;
+
 import com.rpkit.core.service.Service;
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.item.action.Blocked;
@@ -19,10 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.logging.Level.SEVERE;
-import static org.bukkit.Material.APPLE;
-import static org.bukkit.inventory.ItemFlag.HIDE_ATTRIBUTES;
 
 public final class NuminousItemService implements Service {
 
@@ -94,7 +94,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "orange",
                 "Orange",
-                NuminousItemCategory.FLORA,
+                List.of(NuminousItemCategory.FOOD_AND_DRINK),
                 NuminousRarity.COMMON,
                 orangeMinecraftItem,
                 List.of(new RestoreHunger(2, 3f)),
@@ -128,7 +128,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "wood",
                 "Wood",
-                NuminousItemCategory.FLORA,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.COMMON,
                 woodMinecraftItem,
                 List.of(new Blocked()),
@@ -162,7 +162,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "handle",
                 "Handle",
-                NuminousItemCategory.REFINED_PART,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.COMMON,
                 handleMinecraftItem,
                 List.of(new Blocked()),
@@ -196,7 +196,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "iron_ore",
                 "Iron ore",
-                NuminousItemCategory.MINING,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.COMMON,
                 ironOreMinecraftItem,
                 List.of(new Blocked()),
@@ -230,7 +230,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "pig_iron_ingot",
                 "Pig iron ingot",
-                NuminousItemCategory.MINING,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.COMMON,
                 pigIronIngotMinecraftItem,
                 List.of(new Blocked()),
@@ -263,7 +263,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "carbon",
                 "Carbon",
-                NuminousItemCategory.MINING,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.COMMON,
                 carbonMinecraftItem,
                 List.of(new Blocked()),
@@ -299,7 +299,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "steel_ingot",
                 "Steel ingot",
-                NuminousItemCategory.MINING,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.COMMON,
                 steelIngotMinecraftItem,
                 List.of(new Blocked()),
@@ -333,7 +333,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "blade",
                 "Blade",
-                NuminousItemCategory.REFINED_PART,
+                List.of(NuminousItemCategory.CRAFTING_MATERIAL),
                 NuminousRarity.UNCOMMON,
                 bladeMinecraftItem,
                 List.of(new Blocked()),
@@ -367,7 +367,7 @@ public final class NuminousItemService implements Service {
                 plugin,
                 "steel_sword",
                 "Steel sword",
-                NuminousItemCategory.WEAPON,
+                List.of(NuminousItemCategory.SIMPLE_WEAPON, NuminousItemCategory.MELEE_WEAPON),
                 NuminousRarity.RARE,
                 steelSwordMinecraftItem,
                 List.of(new Blocked()),
