@@ -37,10 +37,12 @@ public final class PlayerQuitListener implements Listener {
             RPKCharacter character = characterService.getActiveCharacter(minecraftProfile).join();
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 if (!minecraftProfile.isOnline()) {
-                    NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
-                    professionService.unload(character);
-                    NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
-                    staminaService.unload(character);
+                    if (character != null) {
+                        NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
+                        professionService.unload(character);
+                        NuminousStaminaService staminaService = Services.INSTANCE.get(NuminousStaminaService.class);
+                        staminaService.unload(character);
+                    }
                 }
             });
         });
