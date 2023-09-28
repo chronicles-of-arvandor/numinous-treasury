@@ -1,12 +1,15 @@
 name: numinous-treasury
 author: alyphen
 version: @version@
-main: net.kingdommc.darkages.numinoustreasury.NuminousTreasury
+main: net.arvandor.numinoustreasury.NuminousTreasury
 api-version: '1.19'
 depend:
 - rpk-core-bukkit
 - rpk-player-lib-bukkit
 - rpk-character-lib-bukkit
+- rpk-notification-lib-bukkit
+softdepend:
+- Votifier
 commands:
   profession:
     description: |

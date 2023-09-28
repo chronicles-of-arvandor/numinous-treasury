@@ -18,3 +18,4 @@ experience:
 stamina:
   max: 100
   restoration-interval: PT15M
+  vote-reward: 5
