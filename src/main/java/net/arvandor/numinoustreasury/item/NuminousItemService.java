@@ -18,10 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class NuminousItemService implements Service {
@@ -39,8 +36,12 @@ public final class NuminousItemService implements Service {
         }
         List<NuminousItemType> itemTypes = Arrays.stream(itemFolder.listFiles()).map(itemFile -> {
             YamlConfiguration itemConfiguration = YamlConfiguration.loadConfiguration(itemFile);
-            return itemConfiguration.getObject("item-type", NuminousItemType.class);
-        }).toList();
+            NuminousItemType itemType =  itemConfiguration.getObject("item-type", NuminousItemType.class);
+            if (itemType == null) {
+                plugin.getLogger().warning("Failed to load item type from " + itemFile.getName());
+            }
+            return itemType;
+        }).filter(Objects::nonNull).toList();
         itemTypesById.putAll(itemTypes.stream().collect(Collectors.toMap(NuminousItemType::getId, item -> item)));
         itemTypesByName.putAll(itemTypes.stream().collect(Collectors.toMap(NuminousItemType::getName, item -> item)));
         plugin.getLogger().info("Loaded " + itemTypes.size() + " item types");

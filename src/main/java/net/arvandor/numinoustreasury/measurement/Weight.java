@@ -1,11 +1,11 @@
 package net.arvandor.numinoustreasury.measurement;
 
+import static java.lang.Math.round;
+
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
 import java.util.Map;
-
-import static java.lang.Math.round;
 
 @SerializableAs("Weight")
 public final class Weight implements Comparable<Weight>, ConfigurationSerializable {
@@ -58,7 +58,7 @@ public final class Weight implements Comparable<Weight>, ConfigurationSerializab
 
     public static Weight deserialize(Map<String, Object> serialized) {
         return new Weight(
-                (Double) serialized.get("value"),
+                ((Number) serialized.get("value")).doubleValue(),
                 WeightUnit.getByName((String) serialized.get("unit"))
         );
     }
