@@ -1,9 +1,15 @@
 package net.arvandor.numinoustreasury.recipe;
 
+import static net.md_5.bungee.api.ChatColor.*;
+import static org.bukkit.inventory.ItemFlag.*;
+
 import com.rpkit.core.service.Services;
-import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.arvandor.numinoustreasury.item.NuminousItemStack;
+import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
+import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -11,14 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static net.md_5.bungee.api.ChatColor.*;
-import static org.bukkit.inventory.ItemFlag.*;
 
 @SerializableAs("NuminousRecipe")
 public final class NuminousRecipe implements ConfigurationSerializable {
@@ -155,7 +159,24 @@ public final class NuminousRecipe implements ConfigurationSerializable {
             }
         }
         for (NuminousItemStack result : getResults()) {
-            player.getInventory().addItem(result.toItemStack());
+            NuminousItemStack resultWithLogEntry = result.copy(
+                    null,
+                    null,
+                    new ArrayList<>() {{
+                        addAll(result.getLogEntries());
+                        add(
+                                new NuminousLogEntry(
+                                        Instant.now(),
+                                        player.getUniqueId(),
+                                        true,
+                                        new BaseComponent[] {
+                                                new TextComponent("Created via crafting")
+                                        }
+                                )
+                        );
+                    }}
+            );
+            player.getInventory().addItem(resultWithLogEntry.toItemStack());
         }
     }
 
