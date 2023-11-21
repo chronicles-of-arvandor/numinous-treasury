@@ -3,17 +3,20 @@ package net.arvandor.numinoustreasury.item;
 import static java.util.Map.entry;
 import static net.md_5.bungee.api.ChatColor.GRAY;
 import static org.bukkit.persistence.PersistentDataType.STRING;
+import static org.bukkit.persistence.PersistentDataType.TAG_CONTAINER_ARRAY;
 
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.item.action.NuminousOnEat;
 import net.arvandor.numinoustreasury.item.action.NuminousOnInteractAir;
 import net.arvandor.numinoustreasury.item.action.NuminousOnInteractBlock;
+import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
 import net.arvandor.numinoustreasury.measurement.Weight;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +94,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         return weight;
     }
 
-    public ItemStack toItemStack(int amount) {
+    public ItemStack toItemStack(int amount, List<NuminousLogEntry> logEntries) {
         ItemStack itemStack = new ItemStack(getMinecraftItem());
         itemStack.setAmount(amount);
         ItemMeta meta = itemStack.getItemMeta();
@@ -100,6 +103,14 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         }
         if (meta != null) {
             meta.getPersistentDataContainer().set(plugin.keys().itemId(), STRING, getId());
+            final ItemMeta finalMeta = meta;
+            meta.getPersistentDataContainer().set(
+                    plugin.keys().logEntries(),
+                    TAG_CONTAINER_ARRAY,
+                    logEntries.stream()
+                            .map(entry -> entry.toCompoundTag(plugin, finalMeta.getPersistentDataContainer()))
+                            .toArray(PersistentDataContainer[]::new));
+
             List<String> lore = meta.getLore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -120,8 +131,6 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         if (id == null) return false;
         return id.equals(getId());
     }
-
-
 
     @Override
     public Map<String, Object> serialize() {

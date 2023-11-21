@@ -36,6 +36,13 @@ commands:
       /node session set - Sets an attribute of the current node session
       /node session create - Finalizes the node creation session and creates the node
     usage: /<command> [create|delete|session]
+  numinouslog:
+    description: |
+      Numinous log management command
+      /numinouslog view - Views the item's log for the item in your hand
+      /numinouslog add - Adds a new entry to the item's log for the item in your hand
+    usage: /<command> [view|add]
+    aliases: [nlog]
 permissions:
   numinoustreasury.command.numinousitem:
     description: Allows creating items
@@ -61,3 +68,9 @@ permissions:
   numinoustreasury.command.node.delete:
     description: Allows deleting nodes
     default: op
+  numinoustreasury.command.numinouslog.add:
+    description: Allows adding log entries
+    default: op
+  numinoustreasury.command.numinouslog.view:
+    description: Allows viewing an item's log
+    default: true

@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.arvandor.numinoustreasury.command.node.NodeCommand;
 import net.arvandor.numinoustreasury.command.numinousitem.NuminousItemCommand;
+import net.arvandor.numinoustreasury.command.numinouslog.NuminousLogCommand;
 import net.arvandor.numinoustreasury.command.profession.ProfessionCommand;
 import net.arvandor.numinoustreasury.command.stamina.StaminaCommand;
 import net.arvandor.numinoustreasury.droptable.NuminousDropTable;
@@ -17,6 +18,7 @@ import net.arvandor.numinoustreasury.item.NuminousItemType;
 import net.arvandor.numinoustreasury.item.action.ApplyPotionEffect;
 import net.arvandor.numinoustreasury.item.action.Blocked;
 import net.arvandor.numinoustreasury.item.action.RestoreHunger;
+import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
 import net.arvandor.numinoustreasury.listener.*;
 import net.arvandor.numinoustreasury.measurement.Weight;
 import net.arvandor.numinoustreasury.node.NuminousNodeRepository;
@@ -62,6 +64,7 @@ public final class NuminousTreasury extends JavaPlugin {
         ConfigurationSerialization.registerClass(Weight.class, "Weight");
 
         // Items
+        ConfigurationSerialization.registerClass(NuminousLogEntry.class, "NuminousLogEntry");
         ConfigurationSerialization.registerClass(NuminousItemStack.class, "NuminousItemStack");
         ConfigurationSerialization.registerClass(NuminousItemType.class, "NuminousItemType");
 
@@ -143,6 +146,7 @@ public final class NuminousTreasury extends JavaPlugin {
         getCommand("numinousitem").setExecutor(new NuminousItemCommand());
         getCommand("stamina").setExecutor(new StaminaCommand(this));
         getCommand("node").setExecutor(new NodeCommand(this));
+        getCommand("numinouslog").setExecutor(new NuminousLogCommand(this));
 
         Duration staminaRestorationInterval = Duration.parse(getConfig().getString("stamina.restoration-interval"));
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
