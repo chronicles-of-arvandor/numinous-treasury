@@ -91,7 +91,7 @@ public final class NuminousItemCommand implements CommandExecutor, TabCompleter 
         NuminousItemType finalItemType = itemType;
         int finalAmount = amount;
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(player.getUniqueId(), finalItemType, finalAmount, "Command"));
+            mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(player, finalItemType, finalAmount, "Command"));
         });
         return true;
     }

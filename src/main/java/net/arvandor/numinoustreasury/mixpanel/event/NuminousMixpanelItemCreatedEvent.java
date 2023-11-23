@@ -2,28 +2,27 @@ package net.arvandor.numinoustreasury.mixpanel.event;
 
 import net.arvandor.numinoustreasury.item.NuminousItemType;
 import net.arvandor.numinoustreasury.mixpanel.NuminousMixpanelEvent;
+import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
-import java.util.UUID;
 
 public final class NuminousMixpanelItemCreatedEvent implements NuminousMixpanelEvent {
 
-    private final UUID minecraftUuid;
+    private final OfflinePlayer player;
     private final NuminousItemType itemType;
     private final int amount;
     private final String source;
 
-    public NuminousMixpanelItemCreatedEvent(UUID minecraftUuid, NuminousItemType itemType, int amount, String source) {
-        this.minecraftUuid = minecraftUuid;
+    public NuminousMixpanelItemCreatedEvent(OfflinePlayer player, NuminousItemType itemType, int amount, String source) {
+        this.player = player;
         this.itemType = itemType;
         this.amount = amount;
         this.source = source;
     }
 
     @Override
-    public String getDistinctId() {
-        if (minecraftUuid == null) return null;
-        return minecraftUuid.toString();
+    public OfflinePlayer getPlayer() {
+        return player;
     }
 
     @Override

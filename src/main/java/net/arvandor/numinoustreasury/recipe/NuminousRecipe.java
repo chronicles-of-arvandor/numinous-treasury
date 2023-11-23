@@ -189,7 +189,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
             player.getInventory().addItem(resultWithLogEntry.toItemStack());
 
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(player.getUniqueId(), resultWithLogEntry.getItemType(), resultWithLogEntry.getAmount(), "Recipe"));
+                mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(player, resultWithLogEntry.getItemType(), resultWithLogEntry.getAmount(), "Recipe"));
             });
         }
     }

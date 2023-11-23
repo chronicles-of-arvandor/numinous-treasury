@@ -3,26 +3,25 @@ package net.arvandor.numinoustreasury.mixpanel.event;
 import com.rpkit.characters.bukkit.character.RPKCharacterId;
 import net.arvandor.numinoustreasury.mixpanel.NuminousMixpanelEvent;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
+import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
-import java.util.UUID;
 
 public final class NuminousMixpanelProfessionSetEvent implements NuminousMixpanelEvent {
 
-    private final UUID minecraftUuid;
+    private final OfflinePlayer player;
     private final RPKCharacterId characterId;
     private final NuminousProfession profession;
 
-    public NuminousMixpanelProfessionSetEvent(UUID minecraftUuid, RPKCharacterId characterId, NuminousProfession profession) {
-        this.minecraftUuid = minecraftUuid;
+    public NuminousMixpanelProfessionSetEvent(OfflinePlayer player, RPKCharacterId characterId, NuminousProfession profession) {
+        this.player = player;
         this.characterId = characterId;
         this.profession = profession;
     }
 
     @Override
-    public String getDistinctId() {
-        if (minecraftUuid == null) return null;
-        return minecraftUuid.toString();
+    public OfflinePlayer getPlayer() {
+        return player;
     }
 
     @Override

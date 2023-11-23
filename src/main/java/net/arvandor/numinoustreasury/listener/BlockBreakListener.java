@@ -110,7 +110,7 @@ public final class BlockBreakListener implements Listener {
                                         event.getPlayer().sendMessage(GRAY + "• " + item.getAmount() + " × " + item.getItemType().getName());
 
                                         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                                            mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(event.getPlayer().getUniqueId(), item.getItemType(), item.getAmount(), "Node"));
+                                            mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(event.getPlayer(), item.getItemType(), item.getAmount(), "Node"));
                                         });
                                     });
                                 }

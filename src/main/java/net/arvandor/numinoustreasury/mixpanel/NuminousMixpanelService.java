@@ -6,11 +6,11 @@ import com.mixpanel.mixpanelapi.MessageBuilder;
 import com.mixpanel.mixpanelapi.MixpanelAPI;
 import com.rpkit.core.service.Service;
 import net.arvandor.numinoustreasury.NuminousTreasury;
+import org.bukkit.OfflinePlayer;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 public final class NuminousMixpanelService implements Service {
 
@@ -33,11 +33,18 @@ public final class NuminousMixpanelService implements Service {
         MessageBuilder messageBuilder = new MessageBuilder(token);
 
         JSONObject props = new JSONObject();
+        if (event.getPlayer() != null) {
+            if (event.getPlayer().isOnline()) {
+                String ip = event.getPlayer().getPlayer().getAddress().getAddress().getHostAddress();
+                props.put("ip", ip);
+            }
+        }
         event.getProps().forEach((key, value) -> {
             props.put(key, JSONObject.wrap(value));
         });
 
-        JSONObject jsonEvent = messageBuilder.event(event.getDistinctId(), event.getEventName(), props);
+        String distinctId = event.getPlayer() != null ? event.getPlayer().getUniqueId().toString() : null;
+        JSONObject jsonEvent = messageBuilder.event(distinctId, event.getEventName(), props);
         try {
             mixpanel.sendMessage(jsonEvent);
         } catch (IOException exception) {
@@ -45,15 +52,22 @@ public final class NuminousMixpanelService implements Service {
         }
     }
 
-    public void updateUserProps(UUID minecraftUuid, Map<String, Object> props) {
+    public void updateUserProps(OfflinePlayer player, Map<String, Object> props) {
         MessageBuilder messageBuilder = new MessageBuilder(token);
 
         JSONObject jsonProps = new JSONObject();
+        if (player != null) {
+            if (player.isOnline()) {
+                String ip = player.getPlayer().getAddress().getAddress().getHostAddress();
+                props.put("ip", ip);
+            }
+        }
         props.forEach((key, value) -> {
             jsonProps.put(key, JSONObject.wrap(value));
         });
 
-        JSONObject update = messageBuilder.set(minecraftUuid.toString(), jsonProps);
+        String distinctId = player != null ? player.getUniqueId().toString() : null;
+        JSONObject update = messageBuilder.set(distinctId, jsonProps);
         try {
             mixpanel.sendMessage(update);
         } catch (IOException exception) {
