@@ -4,12 +4,16 @@ import static net.md_5.bungee.api.ChatColor.*;
 import static org.bukkit.inventory.ItemFlag.*;
 
 import com.rpkit.core.service.Services;
+import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.item.NuminousItemStack;
 import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
+import net.arvandor.numinoustreasury.mixpanel.NuminousMixpanelService;
+import net.arvandor.numinoustreasury.mixpanel.event.NuminousMixpanelItemCreatedEvent;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
 import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -27,6 +31,7 @@ import java.util.stream.Collectors;
 @SerializableAs("NuminousRecipe")
 public final class NuminousRecipe implements ConfigurationSerializable {
 
+    private final NuminousTreasury plugin;
     private final String name;
     private final List<NuminousItemStack> ingredients;
     private final List<NuminousItemStack> results;
@@ -36,14 +41,18 @@ public final class NuminousRecipe implements ConfigurationSerializable {
     private final Material workstation;
     private final Material iconMaterial;
 
-    public NuminousRecipe(String name,
-                          List<NuminousItemStack> ingredients,
-                          List<NuminousItemStack> results,
-                          Map<NuminousProfession, Integer> requiredProfessionLevel,
-                          int experience,
-                          int stamina,
-                          Material workstation,
-                          Material iconMaterial) {
+    public NuminousRecipe(
+            NuminousTreasury plugin,
+            String name,
+            List<NuminousItemStack> ingredients,
+            List<NuminousItemStack> results,
+            Map<NuminousProfession, Integer> requiredProfessionLevel,
+            int experience,
+            int stamina,
+            Material workstation,
+            Material iconMaterial
+    ) {
+        this.plugin = plugin;
         this.name = name;
         this.ingredients = ingredients;
         this.results = results;
@@ -158,6 +167,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                 throw new IllegalStateException("Player " + player.getName() + " did not have enough of the required ingredients for recipe " + getName());
             }
         }
+        NuminousMixpanelService mixpanelService = Services.INSTANCE.get(NuminousMixpanelService.class);
         for (NuminousItemStack result : getResults()) {
             NuminousItemStack resultWithLogEntry = result.copy(
                     null,
@@ -177,6 +187,10 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                     }}
             );
             player.getInventory().addItem(resultWithLogEntry.toItemStack());
+
+            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(player.getUniqueId(), resultWithLogEntry.getItemType(), resultWithLogEntry.getAmount(), "Recipe"));
+            });
         }
     }
 
@@ -221,6 +235,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
     public static NuminousRecipe deserialize(Map<String, Object> serialized) {
         NuminousProfessionService professionService = Services.INSTANCE.get(NuminousProfessionService.class);
         return new NuminousRecipe(
+                (NuminousTreasury) Bukkit.getServer().getPluginManager().getPlugin("numinous-treasury"),
                 (String) serialized.get("name"),
                 (List<NuminousItemStack>) serialized.get("ingredients"),
                 (List<NuminousItemStack>) serialized.get("results"),

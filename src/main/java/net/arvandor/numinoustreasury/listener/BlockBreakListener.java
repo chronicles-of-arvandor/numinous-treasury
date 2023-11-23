@@ -5,12 +5,17 @@ import static net.md_5.bungee.api.ChatColor.*;
 import com.rpkit.core.service.Services;
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.droptable.NuminousDropTableItem;
+import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
+import net.arvandor.numinoustreasury.mixpanel.NuminousMixpanelService;
+import net.arvandor.numinoustreasury.mixpanel.event.NuminousMixpanelItemCreatedEvent;
 import net.arvandor.numinoustreasury.node.NuminousNode;
 import net.arvandor.numinoustreasury.node.NuminousNodeService;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
 import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.arvandor.numinoustreasury.stamina.NuminousStaminaService;
 import net.arvandor.numinoustreasury.stamina.StaminaTier;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,6 +24,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 
@@ -89,9 +95,23 @@ public final class BlockBreakListener implements Listener {
                                     event.getPlayer().sendMessage(RED + "Try as you might, you weren't able to retrieve anything yet. Perhaps if you try again?");
                                 } else {
                                     event.getPlayer().sendMessage(GREEN + "You got:");
+                                    NuminousMixpanelService mixpanelService = Services.INSTANCE.get(NuminousMixpanelService.class);
                                     drop.getItems().forEach(item -> {
-                                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getRelative(finalFace).getLocation(), item.toItemStack());
+                                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getRelative(finalFace).getLocation(), item.copy(null, null, List.of(
+                                                new NuminousLogEntry(
+                                                        Instant.now(),
+                                                        event.getPlayer().getUniqueId(),
+                                                        true,
+                                                        new BaseComponent[] {
+                                                                new TextComponent("Harvested from node \"" + node.getName() + "\"")
+                                                        }
+                                                )
+                                        )).toItemStack());
                                         event.getPlayer().sendMessage(GRAY + "• " + item.getAmount() + " × " + item.getItemType().getName());
+
+                                        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                                            mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(event.getPlayer().getUniqueId(), item.getItemType(), item.getAmount(), "Node"));
+                                        });
                                     });
                                 }
                             } else {
