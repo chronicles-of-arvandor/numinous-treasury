@@ -1,11 +1,14 @@
 package net.arvandor.numinoustreasury.recipe;
 
+import static java.util.logging.Level.SEVERE;
+import static org.bukkit.Material.*;
+
 import com.rpkit.core.service.Service;
 import com.rpkit.core.service.Services;
-import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.item.NuminousItemService;
 import net.arvandor.numinoustreasury.item.NuminousItemStack;
+import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -13,9 +16,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.logging.Level.SEVERE;
-import static org.bukkit.Material.*;
 
 public final class NuminousRecipeService implements Service {
 
@@ -59,6 +59,7 @@ public final class NuminousRecipeService implements Service {
         File handleFile = new File(recipesFolder, "handle.yml");
         YamlConfiguration handleConfig = new YamlConfiguration();
         handleConfig.set("recipe", new NuminousRecipe(
+                plugin,
                 "Handle",
                 List.of(
                         new NuminousItemStack(itemService.getItemTypeById("wood"))
@@ -85,6 +86,7 @@ public final class NuminousRecipeService implements Service {
         File pigIronIngotFile = new File(recipesFolder, "pig_iron_ingot.yml");
         YamlConfiguration pigIronIngotConfig = new YamlConfiguration();
         pigIronIngotConfig.set("recipe", new NuminousRecipe(
+                plugin,
                 "Pig iron ingot",
                 List.of(
                         new NuminousItemStack(itemService.getItemTypeById("iron_ore"))
@@ -111,6 +113,7 @@ public final class NuminousRecipeService implements Service {
         File steelIngotFile = new File(recipesFolder, "steel_ingot.yml");
         YamlConfiguration steelIngotConfig = new YamlConfiguration();
         steelIngotConfig.set("recipe", new NuminousRecipe(
+                plugin,
                 "Steel ingot",
                 List.of(
                         new NuminousItemStack(itemService.getItemTypeById("pig_iron_ingot")),
@@ -138,6 +141,7 @@ public final class NuminousRecipeService implements Service {
         File bladeFile = new File(recipesFolder, "blade.yml");
         YamlConfiguration bladeConfig = new YamlConfiguration();
         bladeConfig.set("recipe", new NuminousRecipe(
+                plugin,
                 "Blade",
                 List.of(
                         new NuminousItemStack(itemService.getItemTypeById("steel_ingot"), 4)
@@ -164,6 +168,7 @@ public final class NuminousRecipeService implements Service {
         File steelSwordFile = new File(recipesFolder, "steel_sword.yml");
         YamlConfiguration steelSwordConfig = new YamlConfiguration();
         steelSwordConfig.set("recipe", new NuminousRecipe(
+                plugin,
                 "Steel sword",
                 List.of(
                         new NuminousItemStack(itemService.getItemTypeById("blade")),

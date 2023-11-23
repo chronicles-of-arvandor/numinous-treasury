@@ -1,13 +1,18 @@
 package net.arvandor.numinoustreasury.command.numinousitem;
 
+import static net.md_5.bungee.api.ChatColor.GREEN;
+import static net.md_5.bungee.api.ChatColor.RED;
+
 import com.rpkit.core.service.Services;
+import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.item.NuminousItemService;
 import net.arvandor.numinoustreasury.item.NuminousItemStack;
 import net.arvandor.numinoustreasury.item.NuminousItemType;
 import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
+import net.arvandor.numinoustreasury.mixpanel.NuminousMixpanelService;
+import net.arvandor.numinoustreasury.mixpanel.event.NuminousMixpanelItemCreatedEvent;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,9 +25,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static net.md_5.bungee.api.ChatColor.*;
-
 public final class NuminousItemCommand implements CommandExecutor, TabCompleter {
+
+    private final NuminousTreasury plugin;
+
+    public NuminousItemCommand(NuminousTreasury plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -77,6 +86,13 @@ public final class NuminousItemCommand implements CommandExecutor, TabCompleter 
         ItemStack bukkitItem = numinousItem.toItemStack();
         player.getInventory().addItem(bukkitItem).values().forEach(overflowItem -> player.getWorld().dropItem(player.getLocation(), overflowItem));
         sender.sendMessage(GREEN + "Created " + amount + " × " + itemType.getName());
+
+        NuminousMixpanelService mixpanelService = Services.INSTANCE.get(NuminousMixpanelService.class);
+        NuminousItemType finalItemType = itemType;
+        int finalAmount = amount;
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            mixpanelService.trackEvent(new NuminousMixpanelItemCreatedEvent(player, finalItemType, finalAmount, "Command"));
+        });
         return true;
     }
 
