@@ -43,7 +43,7 @@ public final class NuminousItemService implements Service {
             return itemType;
         }).filter(Objects::nonNull).toList();
         itemTypesById.putAll(itemTypes.stream().collect(Collectors.toMap(NuminousItemType::getId, item -> item)));
-        itemTypesByName.putAll(itemTypes.stream().collect(Collectors.toMap(NuminousItemType::getName, item -> item)));
+        itemTypesByName.putAll(itemTypes.stream().collect(Collectors.toMap(item -> item.getName().toLowerCase(), item -> item)));
         plugin.getLogger().info("Loaded " + itemTypes.size() + " item types");
     }
 
