@@ -43,6 +43,10 @@ commands:
       /numinouslog add - Adds a new entry to the item's log for the item in your hand
     usage: /<command> [view|add]
     aliases: [nlog]
+  booktitle:
+    description: Sets a book's title, allowing breaking the character limit
+    usage: /<command> [title]
+    aliases: [btitle]
 permissions:
   numinoustreasury.command.numinousitem:
     description: Allows creating items

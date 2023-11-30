@@ -3,6 +3,7 @@ package net.arvandor.numinoustreasury;
 import com.rpkit.core.service.Services;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.arvandor.numinoustreasury.command.booktitle.BookTitleCommand;
 import net.arvandor.numinoustreasury.command.node.NodeCommand;
 import net.arvandor.numinoustreasury.command.numinousitem.NuminousItemCommand;
 import net.arvandor.numinoustreasury.command.numinouslog.NuminousLogCommand;
@@ -149,6 +150,7 @@ public final class NuminousTreasury extends JavaPlugin {
         getCommand("stamina").setExecutor(new StaminaCommand(this));
         getCommand("node").setExecutor(new NodeCommand(this));
         getCommand("numinouslog").setExecutor(new NuminousLogCommand(this));
+        getCommand("booktitle").setExecutor(new BookTitleCommand());
 
         Duration staminaRestorationInterval = Duration.parse(getConfig().getString("stamina.restoration-interval"));
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
