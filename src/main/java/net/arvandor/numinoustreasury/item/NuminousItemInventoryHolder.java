@@ -15,7 +15,10 @@ public class NuminousItemInventoryHolder implements InventoryHolder {
         this.numinousItemStack = numinousItemStack;
         this.itemStack = itemStack;
         this.inventory = Bukkit.createInventory(this, numinousItemStack.getItemType().getInventorySlots(), numinousItemStack.getItemType().getName());
-        this.inventory.setContents(numinousItemStack.getInventoryContents());
+        ItemStack[] inventoryContents = numinousItemStack.getInventoryContents();
+        if (inventoryContents != null) {
+            this.inventory.setContents(inventoryContents);
+        }
     }
 
     @Override
