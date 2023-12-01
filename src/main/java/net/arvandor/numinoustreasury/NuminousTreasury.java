@@ -3,6 +3,7 @@ package net.arvandor.numinoustreasury;
 import com.rpkit.core.service.Services;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.arvandor.numinoustreasury.command.booktitle.BookTitleCommand;
 import net.arvandor.numinoustreasury.command.node.NodeCommand;
 import net.arvandor.numinoustreasury.command.numinousitem.NuminousItemCommand;
 import net.arvandor.numinoustreasury.command.numinouslog.NuminousLogCommand;
@@ -17,6 +18,7 @@ import net.arvandor.numinoustreasury.item.NuminousItemStack;
 import net.arvandor.numinoustreasury.item.NuminousItemType;
 import net.arvandor.numinoustreasury.item.action.ApplyPotionEffect;
 import net.arvandor.numinoustreasury.item.action.Blocked;
+import net.arvandor.numinoustreasury.item.action.OpenInventory;
 import net.arvandor.numinoustreasury.item.action.RestoreHunger;
 import net.arvandor.numinoustreasury.item.log.NuminousLogEntry;
 import net.arvandor.numinoustreasury.listener.*;
@@ -24,6 +26,8 @@ import net.arvandor.numinoustreasury.measurement.Weight;
 import net.arvandor.numinoustreasury.mixpanel.NuminousMixpanelService;
 import net.arvandor.numinoustreasury.node.NuminousNodeRepository;
 import net.arvandor.numinoustreasury.node.NuminousNodeService;
+import net.arvandor.numinoustreasury.pdc.NamespacedKeys;
+import net.arvandor.numinoustreasury.pdc.PersistentDataTypes;
 import net.arvandor.numinoustreasury.profession.NuminousCharacterProfessionRepository;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
 import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
@@ -49,17 +53,20 @@ import java.util.Map;
 public final class NuminousTreasury extends JavaPlugin {
 
     private NamespacedKeys keys;
+    private PersistentDataTypes persistentDataTypes;
 
     private DataSource dataSource;
 
     @Override
     public void onEnable() {
         keys = new NamespacedKeys(this);
+        persistentDataTypes = new PersistentDataTypes(this);
 
         // Actions
         ConfigurationSerialization.registerClass(ApplyPotionEffect.class, "ApplyPotionEffect");
         ConfigurationSerialization.registerClass(Blocked.class, "Blocked");
         ConfigurationSerialization.registerClass(RestoreHunger.class, "RestoreHunger");
+        ConfigurationSerialization.registerClass(OpenInventory.class, "OpenInventory");
 
         // Measurements
         ConfigurationSerialization.registerClass(Weight.class, "Weight");
@@ -130,6 +137,7 @@ public final class NuminousTreasury extends JavaPlugin {
                 new AsyncPlayerPreLoginListener(this),
                 new BlockBreakListener(this),
                 new InventoryClickListener(),
+                new InventoryCloseListener(),
                 new PlayerInteractListener(this),
                 new PlayerItemConsumeListener(),
                 new PlayerMoveListener(),
@@ -149,6 +157,7 @@ public final class NuminousTreasury extends JavaPlugin {
         getCommand("stamina").setExecutor(new StaminaCommand(this));
         getCommand("node").setExecutor(new NodeCommand(this));
         getCommand("numinouslog").setExecutor(new NuminousLogCommand(this));
+        getCommand("booktitle").setExecutor(new BookTitleCommand());
 
         Duration staminaRestorationInterval = Duration.parse(getConfig().getString("stamina.restoration-interval"));
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
@@ -174,6 +183,10 @@ public final class NuminousTreasury extends JavaPlugin {
 
     public NamespacedKeys keys() {
         return keys;
+    }
+
+    public PersistentDataTypes persistentDataTypes() {
+        return persistentDataTypes;
     }
 
 }

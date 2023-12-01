@@ -72,6 +72,7 @@ public final class NuminousItemCommand implements CommandExecutor, TabCompleter 
         NuminousItemStack numinousItem = new NuminousItemStack(
                 itemType,
                 amount,
+                null,
                 List.of(
                         new NuminousLogEntry(
                                 Instant.now(),
