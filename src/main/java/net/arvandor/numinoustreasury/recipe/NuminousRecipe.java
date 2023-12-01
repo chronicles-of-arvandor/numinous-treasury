@@ -172,6 +172,7 @@ public final class NuminousRecipe implements ConfigurationSerializable {
             NuminousItemStack resultWithLogEntry = result.copy(
                     null,
                     null,
+                    null,
                     new ArrayList<>() {{
                         addAll(result.getLogEntries());
                         add(

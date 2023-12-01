@@ -35,6 +35,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
     private final List<NuminousOnInteractBlock> onInteractBlock;
     private final List<NuminousOnInteractAir> onInteractAir;
     private final Weight weight;
+    private final int inventorySlots;
 
     public NuminousItemType(NuminousTreasury plugin,
                             String id,
@@ -45,7 +46,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                             List<NuminousOnEat> onEat,
                             List<NuminousOnInteractBlock> onInteractBlock,
                             List<NuminousOnInteractAir> onInteractAir,
-                            Weight weight) {
+                            Weight weight,
+                            int inventorySlots) {
         this.plugin = plugin;
         this.id = id;
         this.name = name;
@@ -56,6 +58,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         this.onInteractBlock = onInteractBlock;
         this.onInteractAir = onInteractAir;
         this.weight = weight;
+        this.inventorySlots = inventorySlots;
     }
 
     public String getId() {
@@ -92,6 +95,10 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
 
     public Weight getWeight() {
         return weight;
+    }
+
+    public int getInventorySlots() {
+        return inventorySlots;
     }
 
     public ItemStack toItemStack(int amount, List<NuminousLogEntry> logEntries) {
@@ -143,7 +150,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 entry("on-eat", getOnEat()),
                 entry("on-interact-block", getOnInteractBlock()),
                 entry("on-interact-air", getOnInteractAir()),
-                entry("weight", getWeight())
+                entry("weight", getWeight()),
+                entry("inventory-slots", getInventorySlots())
         );
     }
 
@@ -158,7 +166,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 (List<NuminousOnEat>) serialized.get("on-eat"),
                 (List<NuminousOnInteractBlock>) serialized.get("on-interact-block"),
                 (List<NuminousOnInteractAir>) serialized.get("on-interact-air"),
-                (Weight) serialized.get("weight")
+                (Weight) serialized.get("weight"),
+                (int) serialized.getOrDefault("inventory-slots", 0)
         );
     }
 

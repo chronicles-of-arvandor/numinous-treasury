@@ -97,7 +97,7 @@ public final class BlockBreakListener implements Listener {
                                     event.getPlayer().sendMessage(GREEN + "You got:");
                                     NuminousMixpanelService mixpanelService = Services.INSTANCE.get(NuminousMixpanelService.class);
                                     drop.getItems().forEach(item -> {
-                                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getRelative(finalFace).getLocation(), item.copy(null, null, List.of(
+                                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getRelative(finalFace).getLocation(), item.copy(null, null, null, List.of(
                                                 new NuminousLogEntry(
                                                         Instant.now(),
                                                         event.getPlayer().getUniqueId(),

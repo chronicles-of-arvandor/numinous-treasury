@@ -1,5 +1,6 @@
-package net.arvandor.numinoustreasury;
+package net.arvandor.numinoustreasury.pdc;
 
+import net.arvandor.numinoustreasury.NuminousTreasury;
 import org.bukkit.NamespacedKey;
 
 public final class NamespacedKeys {
@@ -10,6 +11,8 @@ public final class NamespacedKeys {
     private final NamespacedKey logEntryMinecraftUuid;
     private final NamespacedKey logEntryIsSystem;
     private final NamespacedKey logEntryText;
+    private final NamespacedKey inventory;
+    private final NamespacedKey inventoryItem;
 
     public NamespacedKeys(NuminousTreasury plugin) {
         this.itemId = new NamespacedKey(plugin, "id");
@@ -18,6 +21,8 @@ public final class NamespacedKeys {
         this.logEntryMinecraftUuid = new NamespacedKey(plugin, "minecraftUuid");
         this.logEntryIsSystem = new NamespacedKey(plugin, "isSystem");
         this.logEntryText = new NamespacedKey(plugin, "text");
+        this.inventory = new NamespacedKey(plugin, "inventory");
+        this.inventoryItem = new NamespacedKey(plugin, "item");
     }
 
     public NamespacedKey itemId() {
@@ -42,5 +47,13 @@ public final class NamespacedKeys {
 
     public NamespacedKey logEntryText() {
         return logEntryText;
+    }
+
+    public NamespacedKey inventory() {
+        return inventory;
+    }
+
+    public NamespacedKey inventoryItem() {
+        return inventoryItem;
     }
 }
