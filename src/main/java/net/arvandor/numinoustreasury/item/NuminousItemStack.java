@@ -161,9 +161,13 @@ public final class NuminousItemStack implements ConfigurationSerializable {
     public static NuminousItemStack deserialize(Map<String, Object> serialized) {
         NuminousItemService itemService = Services.INSTANCE.get(NuminousItemService.class);
         List<ItemStack> inventory = (List<ItemStack>) serialized.get("inventory-contents");
+        NuminousItemType itemType = itemService.getItemTypeById((String) serialized.get("item-type"));
+        if (itemType == null) {
+            throw new IllegalStateException("Item type " + serialized.get("item-type") + " does not exist");
+        }
         return new NuminousItemStack(
-                itemService.getItemTypeById((String) serialized.get("item-type")),
-                (Integer) serialized.get("amount"),
+                itemType,
+                ((Number) serialized.get("amount")).intValue(),
                 inventory == null ? null : inventory.toArray(ItemStack[]::new),
                 (List<NuminousLogEntry>) serialized.get("log-entries")
         );
