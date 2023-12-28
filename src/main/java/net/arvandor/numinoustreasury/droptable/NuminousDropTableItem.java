@@ -37,7 +37,7 @@ public final class NuminousDropTableItem implements ConfigurationSerializable, C
     public static NuminousDropTableItem deserialize(Map<String, Object> serialized) {
         return new NuminousDropTableItem(
                 (List<NuminousItemStack>) serialized.get("items"),
-                (int) serialized.get("chance")
+                ((Number) serialized.get("chance")).intValue()
         );
     }
 

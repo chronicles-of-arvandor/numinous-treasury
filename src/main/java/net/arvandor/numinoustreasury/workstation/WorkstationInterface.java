@@ -93,9 +93,9 @@ public final class WorkstationInterface implements InventoryHolder {
             int itemIndex = i + (page * ITEMS_PER_PAGE);
             if (itemIndex < possibleRecipes.size()) {
                 NuminousRecipe recipe = possibleRecipes.get(itemIndex);
-                inventory.setItem(itemIndex, recipe.getIcon(player));
+                inventory.setItem(i, recipe.getIcon(player));
             } else {
-                inventory.setItem(itemIndex, null);
+                inventory.setItem(i, null);
             }
         }
         if (page > 0) {
@@ -105,9 +105,9 @@ public final class WorkstationInterface implements InventoryHolder {
                 previousPageMeta.setDisplayName("Previous page");
                 previousPageItem.setItemMeta(previousPageMeta);
             }
-            inventory.setItem(INVENTORY_SIZE - ROW_SIZE - 1, previousPageItem);
+            inventory.setItem(INVENTORY_SIZE - ROW_SIZE, previousPageItem);
         } else {
-            inventory.setItem(INVENTORY_SIZE - ROW_SIZE - 1, null);
+            inventory.setItem(INVENTORY_SIZE - ROW_SIZE, null);
         }
         if (page < possibleRecipes.size() / ITEMS_PER_PAGE) {
             ItemStack nextPageItem = new ItemStack(PAPER, 1);
@@ -123,7 +123,7 @@ public final class WorkstationInterface implements InventoryHolder {
     }
 
     public void onClick(int slot) {
-        if (slot == INVENTORY_SIZE - ROW_SIZE - 1 && page > 0) {
+        if (slot == INVENTORY_SIZE - ROW_SIZE && page > 0) {
             setPage(getPage() - 1);
         } else if (slot == INVENTORY_SIZE - 1 && page < possibleRecipes.size() / ITEMS_PER_PAGE) {
             setPage(getPage() + 1);
