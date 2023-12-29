@@ -1,16 +1,19 @@
 package net.arvandor.numinoustreasury.listener;
 
+import static net.md_5.bungee.api.ChatColor.GREEN;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
+
 import com.rpkit.core.service.Services;
+import net.arvandor.numinoustreasury.NuminousTreasury;
 import net.arvandor.numinoustreasury.interaction.NuminousInteractionService;
 import net.arvandor.numinoustreasury.interaction.NuminousInteractionStatus;
 import net.arvandor.numinoustreasury.item.NuminousItemStack;
 import net.arvandor.numinoustreasury.item.action.NuminousOnInteractAir;
 import net.arvandor.numinoustreasury.item.action.NuminousOnInteractBlock;
+import net.arvandor.numinoustreasury.node.NuminousNodeCreationSession;
 import net.arvandor.numinoustreasury.node.NuminousNodeService;
 import net.arvandor.numinoustreasury.recipe.NuminousRecipe;
 import net.arvandor.numinoustreasury.recipe.NuminousRecipeService;
-import net.arvandor.numinoustreasury.NuminousTreasury;
-import net.arvandor.numinoustreasury.node.NuminousNodeCreationSession;
 import net.arvandor.numinoustreasury.workstation.WorkstationInterface;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,9 +21,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.List;
-
-import static net.md_5.bungee.api.ChatColor.GREEN;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public final class PlayerInteractListener implements Listener {
 
@@ -58,7 +58,15 @@ public final class PlayerInteractListener implements Listener {
         if (event.getAction() != RIGHT_CLICK_BLOCK) return;
         NuminousRecipeService recipeService = Services.INSTANCE.get(NuminousRecipeService.class);
         List<NuminousRecipe> workstationRecipes = recipeService.getRecipes().stream()
-                .filter(recipe -> recipe.getWorkstation() == event.getClickedBlock().getType()).toList();
+                .filter(recipe -> recipe.getWorkstation() == event.getClickedBlock().getType())
+                .sorted((a, b) -> {
+                    boolean aRequirementsMet = a.isIngredientRequirementsMet(event.getPlayer()) && a.isProfessionRequirementsMet(event.getPlayer());
+                    boolean bRequirementsMet = b.isIngredientRequirementsMet(event.getPlayer()) && b.isProfessionRequirementsMet(event.getPlayer());
+                    if (aRequirementsMet && !bRequirementsMet) return -1;
+                    if (!aRequirementsMet && bRequirementsMet) return 1;
+                    return 0;
+                })
+                .toList();
         if (workstationRecipes.isEmpty()) return;
         event.setCancelled(true);
         WorkstationInterface workstationInterface = new WorkstationInterface(plugin, event.getPlayer(), workstationRecipes);
