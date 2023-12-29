@@ -142,14 +142,14 @@ public final class WorkstationInterface implements InventoryHolder {
                                     plugin.getServer().getScheduler().runTask(plugin, () -> {
                                         String noStaminaMessage = possibleNoStaminaMessages.get(random.nextInt(possibleNoStaminaMessages.size()));
                                         player.sendMessage(RED + noStaminaMessage);
-                                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 0.5f);
+                                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 0.5f);
                                     });
                                     return;
                                 }
                                 staminaService.setStamina(dsl, player, oldStamina - recipe.getStamina());
                                 plugin.getServer().getScheduler().runTask(plugin, () -> {
                                     recipe.use(player);
-                                    player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1f, 1f);
+                                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1f, 1f);
                                     player.sendMessage(GREEN + "Crafted:");
                                     recipe.getResults().forEach(result ->
                                             player.sendMessage(GRAY + "• " + result.getItemType().getName() + " × " + result.getAmount())
@@ -172,13 +172,13 @@ public final class WorkstationInterface implements InventoryHolder {
                                                 }
                                                 if (newLevel > oldLevel) {
                                                     if (newLevel == maxLevel) {
-                                                        player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+                                                        player.getWorld().playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                                                     } else {
-                                                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                                                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                                                     }
                                                     player.sendMessage(YELLOW + "Level up! You are now a level " + newLevel + " " + profession.getName());
                                                 } else {
-                                                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                                                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                                                 }
                                             }
                                             renderPage(getPage());

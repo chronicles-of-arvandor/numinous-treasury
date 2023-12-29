@@ -79,7 +79,7 @@ public final class BlockBreakListener implements Listener {
                             plugin.getServer().getScheduler().runTask(plugin, () -> {
                                 String noStaminaMessage = possibleNoStaminaMessages.get(random.nextInt(possibleNoStaminaMessages.size()));
                                 event.getPlayer().sendMessage(RED + noStaminaMessage);
-                                event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 0.5f);
+                                event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 0.5f);
                             });
                             return;
                         }
@@ -133,13 +133,13 @@ public final class BlockBreakListener implements Listener {
                                         }
                                         if (newLevel > oldLevel) {
                                             if (newLevel == maxLevel) {
-                                                event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+                                                event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                                             } else {
-                                                event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                                                event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                                             }
                                             event.getPlayer().sendMessage(YELLOW + "Level up! You are now a level " + newLevel + " " + profession.getName());
                                         } else {
-                                            event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                                            event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                                         }
                                     }
                                 });
