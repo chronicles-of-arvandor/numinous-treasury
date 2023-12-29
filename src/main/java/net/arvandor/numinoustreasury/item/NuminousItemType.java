@@ -36,6 +36,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
     private final List<NuminousOnInteractAir> onInteractAir;
     private final Weight weight;
     private final int inventorySlots;
+    private final boolean isAllowLogEntries;
 
     public NuminousItemType(NuminousTreasury plugin,
                             String id,
@@ -47,7 +48,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                             List<NuminousOnInteractBlock> onInteractBlock,
                             List<NuminousOnInteractAir> onInteractAir,
                             Weight weight,
-                            int inventorySlots) {
+                            int inventorySlots,
+                            boolean isAllowLogEntries) {
         this.plugin = plugin;
         this.id = id;
         this.name = name;
@@ -59,6 +61,7 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         this.onInteractAir = onInteractAir;
         this.weight = weight;
         this.inventorySlots = inventorySlots;
+        this.isAllowLogEntries = isAllowLogEntries;
     }
 
     public String getId() {
@@ -101,6 +104,10 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         return inventorySlots;
     }
 
+    public boolean isAllowLogEntries() {
+        return isAllowLogEntries;
+    }
+
     public ItemStack toItemStack(int amount, List<NuminousLogEntry> logEntries) {
         ItemStack itemStack = new ItemStack(getMinecraftItem());
         itemStack.setAmount(amount);
@@ -111,13 +118,14 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         if (meta != null) {
             meta.getPersistentDataContainer().set(plugin.keys().itemId(), STRING, getId());
             final ItemMeta finalMeta = meta;
-            meta.getPersistentDataContainer().set(
-                    plugin.keys().logEntries(),
-                    TAG_CONTAINER_ARRAY,
-                    logEntries.stream()
-                            .map(entry -> entry.toCompoundTag(plugin, finalMeta.getPersistentDataContainer()))
-                            .toArray(PersistentDataContainer[]::new));
-
+            if (logEntries != null) {
+                meta.getPersistentDataContainer().set(
+                        plugin.keys().logEntries(),
+                        TAG_CONTAINER_ARRAY,
+                        logEntries.stream()
+                                .map(entry -> entry.toCompoundTag(plugin, finalMeta.getPersistentDataContainer()))
+                                .toArray(PersistentDataContainer[]::new));
+            }
             List<String> lore = meta.getLore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -151,7 +159,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 entry("on-interact-block", getOnInteractBlock()),
                 entry("on-interact-air", getOnInteractAir()),
                 entry("weight", getWeight()),
-                entry("inventory-slots", getInventorySlots())
+                entry("inventory-slots", getInventorySlots()),
+                entry("allow-log-entries", isAllowLogEntries())
         );
     }
 
@@ -167,7 +176,8 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 (List<NuminousOnInteractBlock>) serialized.get("on-interact-block"),
                 (List<NuminousOnInteractAir>) serialized.get("on-interact-air"),
                 (Weight) serialized.get("weight"),
-                (int) serialized.getOrDefault("inventory-slots", 0)
+                (int) serialized.getOrDefault("inventory-slots", 0),
+                serialized.containsKey("allow-log-entries") ? (boolean) serialized.get("allow-log-entries") : true
         );
     }
 

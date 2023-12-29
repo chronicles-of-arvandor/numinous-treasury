@@ -65,6 +65,11 @@ public final class NuminousLogAddCommand implements CommandExecutor, TabComplete
             return true;
         }
 
+        if (!numinousItem.getItemType().isAllowLogEntries()) {
+            sender.sendMessage(RED + "This item does not allow log entries.");
+            return true;
+        }
+
         List<NuminousLogEntry> logEntries = new ArrayList<>(numinousItem.getLogEntries());
 
         if (args.length < 1) {
