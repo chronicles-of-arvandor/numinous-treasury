@@ -31,7 +31,7 @@ public final class NuminousItemStack implements ConfigurationSerializable {
         this.itemType = itemType;
         this.amount = amount;
         this.inventoryContents = inventoryContents;
-        this.logEntries = logEntries;
+        this.logEntries = itemType.isAllowLogEntries() ? logEntries : null;
     }
 
     public NuminousItemStack(NuminousItemType itemType, int amount) {
@@ -114,9 +114,11 @@ public final class NuminousItemStack implements ConfigurationSerializable {
                     }
                     return container;
                 }).toArray(PersistentDataContainer[]::new));
-        meta.getPersistentDataContainer().set(plugin.keys().logEntries(), TAG_CONTAINER_ARRAY, logEntries.stream()
-                .map(logEntry -> logEntry.toCompoundTag(plugin, meta.getPersistentDataContainer()))
-                .toArray(PersistentDataContainer[]::new));
+        if (logEntries != null) {
+            meta.getPersistentDataContainer().set(plugin.keys().logEntries(), TAG_CONTAINER_ARRAY, logEntries.stream()
+                    .map(logEntry -> logEntry.toCompoundTag(plugin, meta.getPersistentDataContainer()))
+                    .toArray(PersistentDataContainer[]::new));
+        }
 
         if (updateLore) {
             ItemMeta typeMeta = itemType.getMinecraftItem().getItemMeta();

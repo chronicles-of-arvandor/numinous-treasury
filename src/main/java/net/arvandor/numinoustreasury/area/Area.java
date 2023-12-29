@@ -44,8 +44,8 @@ public final class Area {
                 && getMinLocation().getX() <= location.getX()
                 && getMinLocation().getY() <= location.getY()
                 && getMinLocation().getZ() <= location.getZ()
-                && getMaxLocation().getX() >= location.getX()
-                && getMaxLocation().getY() >= location.getY()
-                && getMaxLocation().getZ() >= location.getZ();
+                && getMaxLocation().getX() + 1 > location.getX()
+                && getMaxLocation().getY() + 1 > location.getY()
+                && getMaxLocation().getZ() + 1 > location.getZ();
     }
 }

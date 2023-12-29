@@ -84,17 +84,17 @@ public final class ProfessionExperienceAddCommand implements CommandExecutor, Ta
                         if (newLevel < maxLevel) {
                             onlineTarget.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (" + experienceSinceLastLevel + "/" + experienceRequiredForNextLevel + ")");
                         } else if (oldLevel < maxLevel && newLevel == maxLevel) {
-                            onlineTarget.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + "exp (MAX LEVEL)");
+                            onlineTarget.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (MAX LEVEL)");
                         }
                         if (newLevel > oldLevel) {
                             if (newLevel == maxLevel) {
-                                onlineTarget.playSound(onlineTarget.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+                                onlineTarget.getWorld().playSound(onlineTarget.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                             } else {
-                                onlineTarget.playSound(onlineTarget.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                                onlineTarget.getWorld().playSound(onlineTarget.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                             }
                             onlineTarget.sendMessage(YELLOW + "Level up! You are now a level " + newLevel + " " + profession.getName());
                         } else {
-                            onlineTarget.playSound(onlineTarget.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                            onlineTarget.getWorld().playSound(onlineTarget.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                         }
                     });
                 } else {
