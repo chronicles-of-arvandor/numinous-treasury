@@ -129,7 +129,7 @@ public final class BlockBreakListener implements Listener {
                                         if (newLevel < maxLevel) {
                                             event.getPlayer().sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (" + experienceSinceLastLevel + "/" + experienceRequiredForNextLevel + ")");
                                         } else if (oldLevel < maxLevel && newLevel == maxLevel) {
-                                            event.getPlayer().sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + "exp (MAX LEVEL)");
+                                            event.getPlayer().sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (MAX LEVEL)");
                                         }
                                         if (newLevel > oldLevel) {
                                             if (newLevel == maxLevel) {
