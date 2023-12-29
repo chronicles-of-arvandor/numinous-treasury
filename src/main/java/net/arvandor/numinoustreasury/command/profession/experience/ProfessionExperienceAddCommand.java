@@ -84,7 +84,7 @@ public final class ProfessionExperienceAddCommand implements CommandExecutor, Ta
                         if (newLevel < maxLevel) {
                             onlineTarget.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (" + experienceSinceLastLevel + "/" + experienceRequiredForNextLevel + ")");
                         } else if (oldLevel < maxLevel && newLevel == maxLevel) {
-                            onlineTarget.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + "exp (MAX LEVEL)");
+                            onlineTarget.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (MAX LEVEL)");
                         }
                         if (newLevel > oldLevel) {
                             if (newLevel == maxLevel) {

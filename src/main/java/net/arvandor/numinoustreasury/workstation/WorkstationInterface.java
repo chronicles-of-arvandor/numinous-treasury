@@ -168,7 +168,7 @@ public final class WorkstationInterface implements InventoryHolder {
                                                 if (newLevel < maxLevel) {
                                                     player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (" + experienceSinceLastLevel + "/" + experienceRequiredForNextLevel + ")");
                                                 } else if (oldLevel < maxLevel && newLevel == maxLevel) {
-                                                    player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + "exp (MAX LEVEL)");
+                                                    player.sendMessage(YELLOW + "+" + (newExperience - oldExperience) + " " + profession.getName() + " exp (MAX LEVEL)");
                                                 }
                                                 if (newLevel > oldLevel) {
                                                     if (newLevel == maxLevel) {
