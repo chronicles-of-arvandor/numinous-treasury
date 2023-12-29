@@ -174,7 +174,9 @@ public final class NuminousRecipe implements ConfigurationSerializable {
                     null,
                     null,
                     new ArrayList<>() {{
-                        addAll(result.getLogEntries());
+                        if (result.getLogEntries() != null) {
+                            addAll(result.getLogEntries());
+                        }
                         add(
                                 new NuminousLogEntry(
                                         Instant.now(),
