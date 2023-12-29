@@ -1,8 +1,12 @@
 package net.arvandor.numinoustreasury.command.profession;
 
+import static net.md_5.bungee.api.ChatColor.*;
+import static net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND;
+import static net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT;
+
 import com.rpkit.core.service.Services;
-import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.arvandor.numinoustreasury.profession.NuminousProfession;
+import net.arvandor.numinoustreasury.profession.NuminousProfessionService;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -16,10 +20,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static net.md_5.bungee.api.ChatColor.*;
-import static net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND;
-import static net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT;
 
 public final class ProfessionSetCommand implements CommandExecutor, TabCompleter {
 
@@ -47,7 +47,7 @@ public final class ProfessionSetCommand implements CommandExecutor, TabCompleter
             return true;
         }
         professionService.setProfession(player, profession, () -> {
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_WORK_FLETCHER, 1.0f, 1.0f);
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_WORK_FLETCHER, 1.0f, 1.0f);
             sender.sendMessage(GREEN + "Profession set to " + profession.getName());
         });
         return true;
