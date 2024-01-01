@@ -42,7 +42,11 @@ public final class BookTitleCommand implements CommandExecutor, TabCompleter {
         }
 
         String title = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
-        bookMeta.setTitle(title.substring(0, 32));
+        if (title.length() > 32) {
+            bookMeta.setTitle(title.substring(0, 32));
+        } else {
+            bookMeta.setTitle(title);
+        }
         bookMeta.setDisplayName(title);
         item.setItemMeta(bookMeta);
         player.getInventory().setItemInMainHand(item);
