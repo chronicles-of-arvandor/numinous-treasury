@@ -35,6 +35,10 @@ public final class ProfessionExperienceSetCommand implements CommandExecutor, Ta
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("numinoustreasury.command.profession.experience.set")) {
+            sender.sendMessage(RED + "You do not have permission to perform this command.");
+            return true;
+        }
         if (args.length < 2) {
             sender.sendMessage(RED + "Usage: /profession experience set [player] [experience]");
             return true;
