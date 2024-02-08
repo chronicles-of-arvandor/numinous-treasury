@@ -78,3 +78,9 @@ permissions:
   numinoustreasury.command.numinouslog.view:
     description: Allows viewing an item's log
     default: true
+  numinoustreasury.command.profession.experience.add:
+    description: Allows adding profession experience
+    default: op
+  numinoustreasury.command.profession.experience.set:
+    description: Allows setting profession experience
+    default: op
