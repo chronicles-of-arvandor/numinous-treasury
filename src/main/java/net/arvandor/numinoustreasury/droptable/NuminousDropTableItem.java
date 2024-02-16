@@ -11,9 +11,9 @@ import java.util.Map;
 public final class NuminousDropTableItem implements ConfigurationSerializable, Comparable<NuminousDropTableItem> {
 
     private final List<NuminousItemStack> items;
-    private final int chance;
+    private final double chance;
 
-    public NuminousDropTableItem(List<NuminousItemStack> items, int chance) {
+    public NuminousDropTableItem(List<NuminousItemStack> items, double chance) {
         this.items = items;
         this.chance = chance;
     }
@@ -22,7 +22,7 @@ public final class NuminousDropTableItem implements ConfigurationSerializable, C
         return items;
     }
 
-    public int getChance() {
+    public double getChance() {
         return chance;
     }
 
@@ -37,12 +37,12 @@ public final class NuminousDropTableItem implements ConfigurationSerializable, C
     public static NuminousDropTableItem deserialize(Map<String, Object> serialized) {
         return new NuminousDropTableItem(
                 (List<NuminousItemStack>) serialized.get("items"),
-                ((Number) serialized.get("chance")).intValue()
+                ((Number) serialized.get("chance")).doubleValue()
         );
     }
 
     @Override
     public int compareTo(NuminousDropTableItem other) {
-        return other.getChance() - getChance();
+        return Double.compare(other.getChance(), getChance());
     }
 }

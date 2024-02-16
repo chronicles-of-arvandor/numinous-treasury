@@ -29,9 +29,9 @@ public final class NuminousDropTable implements ConfigurationSerializable, Compa
     }
 
     public NuminousDropTableItem chooseItem() {
-        int chanceSum = getItems().stream().map(NuminousDropTableItem::getChance).reduce(0, Integer::sum);
-        int choice = random.nextInt(chanceSum);
-        int sum = 0;
+        double chanceSum = getItems().stream().map(NuminousDropTableItem::getChance).reduce(0D, Double::sum);
+        double choice = random.nextDouble(chanceSum);
+        double sum = 0;
         for (NuminousDropTableItem item : getItems()) {
             sum += item.getChance();
             if (sum > choice) return item;
