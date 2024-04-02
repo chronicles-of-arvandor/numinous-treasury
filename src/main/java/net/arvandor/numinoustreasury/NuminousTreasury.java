@@ -7,6 +7,7 @@ import net.arvandor.numinoustreasury.command.booktitle.BookTitleCommand;
 import net.arvandor.numinoustreasury.command.node.NodeCommand;
 import net.arvandor.numinoustreasury.command.numinousitem.NuminousItemCommand;
 import net.arvandor.numinoustreasury.command.numinouslog.NuminousLogCommand;
+import net.arvandor.numinoustreasury.command.numinousmodify.NuminousModifyCommand;
 import net.arvandor.numinoustreasury.command.profession.ProfessionCommand;
 import net.arvandor.numinoustreasury.command.stamina.StaminaCommand;
 import net.arvandor.numinoustreasury.droptable.NuminousDropTable;
@@ -154,6 +155,7 @@ public final class NuminousTreasury extends JavaPlugin {
 
         getCommand("profession").setExecutor(new ProfessionCommand(this));
         getCommand("numinousitem").setExecutor(new NuminousItemCommand(this));
+        getCommand("numinousmodify").setExecutor(new NuminousModifyCommand(this));
         getCommand("stamina").setExecutor(new StaminaCommand(this));
         getCommand("node").setExecutor(new NodeCommand(this));
         getCommand("numinouslog").setExecutor(new NuminousLogCommand(this));
