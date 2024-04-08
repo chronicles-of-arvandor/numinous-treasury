@@ -5,18 +5,20 @@ import net.arvandor.numinoustreasury.NuminousTreasury;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public final class NuminousItemService implements Service {
 
     private final NuminousTreasury plugin;
+    private final File itemFolder;
     private final Map<String, NuminousItemType> itemTypesById = new HashMap<>();
     private final Map<String, NuminousItemType> itemTypesByName = new HashMap<>();
 
     public NuminousItemService(NuminousTreasury plugin) {
         this.plugin = plugin;
-        File itemFolder = new File(plugin.getDataFolder(), "items");
+        itemFolder = new File(plugin.getDataFolder(), "items");
         if (!itemFolder.exists()) {
             itemFolder.mkdirs();
         }
@@ -48,6 +50,13 @@ public final class NuminousItemService implements Service {
 
     public List<NuminousItemType> getItemTypes() {
         return itemTypesById.values().stream().sorted().toList();
+    }
+
+    public void save(NuminousItemType itemType) throws IOException {
+        YamlConfiguration itemConfiguration = new YamlConfiguration();
+        itemConfiguration.set("item-type", itemType);
+        File itemFile = new File(itemFolder, itemType.getId() + ".yml");
+        itemConfiguration.save(itemFile);
     }
 
 }

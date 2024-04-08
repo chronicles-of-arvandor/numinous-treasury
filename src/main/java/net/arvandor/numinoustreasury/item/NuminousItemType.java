@@ -27,16 +27,16 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
 
     private final NuminousTreasury plugin;
     private final String id;
-    private final String name;
+    private String name;
     private final List<NuminousItemCategory> categories;
-    private final NuminousRarity rarity;
-    private final ItemStack minecraftItem;
+    private NuminousRarity rarity;
+    private ItemStack minecraftItem;
     private final List<NuminousOnEat> onEat;
     private final List<NuminousOnInteractBlock> onInteractBlock;
     private final List<NuminousOnInteractAir> onInteractAir;
-    private final Weight weight;
-    private final int inventorySlots;
-    private final boolean isAllowLogEntries;
+    private Weight weight;
+    private int inventorySlots;
+    private boolean isAllowLogEntries;
 
     public NuminousItemType(NuminousTreasury plugin,
                             String id,
@@ -72,8 +72,16 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<NuminousItemCategory> getCategories() {
         return categories;
+    }
+
+    public void setRarity(NuminousRarity rarity) {
+        this.rarity = rarity;
     }
 
     public NuminousRarity getRarity() {
@@ -82,6 +90,10 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
 
     public ItemStack getMinecraftItem() {
         return minecraftItem;
+    }
+
+    public void setMinecraftItem(ItemStack minecraftItem) {
+        this.minecraftItem = minecraftItem;
     }
 
     public List<NuminousOnEat> getOnEat() {
@@ -100,12 +112,24 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
         return weight;
     }
 
+    public void setWeight(Weight weight) {
+        this.weight = weight;
+    }
+
     public int getInventorySlots() {
         return inventorySlots;
     }
 
+    public void setInventorySlots(int inventorySlots) {
+        this.inventorySlots = inventorySlots;
+    }
+
     public boolean isAllowLogEntries() {
         return isAllowLogEntries;
+    }
+
+    public void setAllowLogEntries(boolean allowLogEntries) {
+        isAllowLogEntries = allowLogEntries;
     }
 
     public ItemStack toItemStack(int amount, List<NuminousLogEntry> logEntries) {
@@ -169,12 +193,12 @@ public final class NuminousItemType implements ConfigurationSerializable, Compar
                 (NuminousTreasury) Bukkit.getPluginManager().getPlugin("numinous-treasury"),
                 (String) serialized.get("id"),
                 (String) serialized.get("name"),
-                ((List<String>) serialized.get("categories")).stream().map(NuminousItemCategory::valueOf).toList(),
+                new ArrayList<>(((List<String>) serialized.get("categories")).stream().map(NuminousItemCategory::valueOf).toList()),
                 NuminousRarity.valueOf((String) serialized.get("rarity")),
                 (ItemStack) serialized.get("minecraft-item"),
-                (List<NuminousOnEat>) serialized.get("on-eat"),
-                (List<NuminousOnInteractBlock>) serialized.get("on-interact-block"),
-                (List<NuminousOnInteractAir>) serialized.get("on-interact-air"),
+                new ArrayList<>((List<NuminousOnEat>) serialized.get("on-eat")),
+                new ArrayList<>((List<NuminousOnInteractBlock>) serialized.get("on-interact-block")),
+                new ArrayList<>((List<NuminousOnInteractAir>) serialized.get("on-interact-air")),
                 (Weight) serialized.get("weight"),
                 (int) serialized.getOrDefault("inventory-slots", 0),
                 serialized.containsKey("allow-log-entries") ? (boolean) serialized.get("allow-log-entries") : true
