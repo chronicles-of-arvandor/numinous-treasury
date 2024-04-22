@@ -3,8 +3,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'nu.studer.jooq' version '7.1.1'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.23'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'nu.studer.jooq' version '9.0'
     id 'maven-publish'
 }
 
@@ -24,17 +25,18 @@ dependencies {
     implementation 'com.rpkit:rpk-player-lib-bukkit:2.4.2:all'
     implementation 'com.rpkit:rpk-character-lib-bukkit:2.4.2:all'
     implementation 'com.rpkit:rpk-notification-lib-bukkit:2.4.2:all'
-    implementation 'org.jooq:jooq:3.17.6'
-    implementation 'org.flywaydb:flyway-core:9.4.0'
-    implementation 'org.flywaydb:flyway-mysql:9.4.0'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
-    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'org.jooq:jooq:3.19.7'
+    implementation 'org.flywaydb:flyway-core:10.11.1'
+    implementation 'org.flywaydb:flyway-mysql:10.11.1'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
     implementation 'com.mixpanel:mixpanel-java:1.5.2'
     implementation 'com.github.NuVotifier:NuVotifier:2.7.2'
-    jooqGenerator 'org.jooq:jooq-meta-extensions:3.17.6'
+    jooqGenerator 'org.jooq:jooq-meta-extensions:3.19.7'
 }
 
 jooq {
+    version = '3.19.7'
     configurations {
         main {
             generationTool {
@@ -111,6 +113,7 @@ shadowJar {
     relocate 'google', 'net.arvandor.numinoustreasury.shadow.google'
     relocate 'io.r2dbc', 'net.arvandor.numinoustreasury.shadow.io.r2dbc'
     relocate 'jakarta', 'net.arvandor.numinoustreasury.shadow.jakarta'
+    relocate 'kotlin', 'net.arvandor.talekeeper.shadow.kotlin'
     relocate 'org.flywaydb', 'net.arvandor.numinoustreasury.shadow.org.flywaydb'
     relocate 'org.intellij', 'net.arvandor.numinoustreasury.shadow.org.intellij'
     relocate 'org.jetbrains', 'net.arvandor.numinoustreasury.shadow.org.jetbrains'
