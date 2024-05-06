@@ -8,7 +8,7 @@ import org.bukkit.Location
 class NuminousNode(
     val id: String,
     val name: String,
-    private val requiredProfessionLevel: Map<NuminousProfession, Int>,
+    val requiredProfessionLevel: Map<NuminousProfession, Int>,
     val experience: Int,
     val staminaCost: Int,
     val dropTable: NuminousDropTable,

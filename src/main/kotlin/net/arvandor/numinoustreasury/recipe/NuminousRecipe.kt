@@ -35,7 +35,7 @@ class NuminousRecipe(
     val experience: Int,
     val stamina: Int,
     val workstation: Material,
-    private val iconMaterial: Material,
+    val iconMaterial: Material,
 ) : ConfigurationSerializable {
     val applicableProfessions: List<NuminousProfession>
         get() = requiredProfessionLevel.keys.toList()

@@ -5,7 +5,7 @@ import org.bukkit.configuration.serialization.SerializableAs
 import java.util.Random
 
 @SerializableAs("NuminousDropTable")
-class NuminousDropTable(val id: String, private val items: List<NuminousDropTableItem>) :
+class NuminousDropTable(val id: String, val items: List<NuminousDropTableItem>) :
     ConfigurationSerializable, Comparable<NuminousDropTable> {
     private val random = Random()
 

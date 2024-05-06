@@ -46,6 +46,7 @@ import net.arvandor.numinoustreasury.recipe.NuminousRecipeService
 import net.arvandor.numinoustreasury.stamina.NuminousCharacterStaminaRepository
 import net.arvandor.numinoustreasury.stamina.NuminousStaminaService
 import net.arvandor.numinoustreasury.stamina.StaminaTier
+import net.arvandor.numinoustreasury.web.WebServer
 import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -207,6 +208,13 @@ class NuminousTreasury : JavaPlugin() {
                 }
             }
         }, (staminaRestorationInterval.toSeconds() * 20L) / 2, staminaRestorationInterval.toSeconds() * 20L)
+
+        server.scheduler.runTaskAsynchronously(
+            this,
+            Runnable {
+                WebServer(this).start()
+            },
+        )
     }
 
     private fun registerListeners(vararg listeners: Listener) {

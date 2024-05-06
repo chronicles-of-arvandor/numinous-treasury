@@ -1,6 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.9.23'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
@@ -20,6 +19,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.9.23'
     implementation 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
     implementation 'com.rpkit:rpk-core-bukkit:2.4.2:all'
     implementation 'com.rpkit:rpk-player-lib-bukkit:2.4.2:all'
@@ -31,6 +31,12 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
     implementation 'com.zaxxer:HikariCP:5.1.0'
     implementation 'com.mixpanel:mixpanel-java:1.5.2'
+    implementation platform('org.http4k:http4k-bom:5.16.2.0')
+    implementation 'org.http4k:http4k-core'
+    implementation 'org.http4k:http4k-server-undertow'
+    implementation 'org.http4k:http4k-contract'
+    implementation 'org.http4k:http4k-format-gson'
+    implementation 'org.jboss.xnio:xnio-nio:3.8.8.Final'
     implementation 'com.github.NuVotifier:NuVotifier:2.7.2'
     jooqGenerator 'org.jooq:jooq-meta-extensions:3.19.7'
 }
@@ -86,6 +92,7 @@ shadowJar {
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib-jdk8'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
+        include(dependency('org.jetbrains.kotlin:kotlin-reflect'))
         include(dependency('org.jetbrains:annotations'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib-jdk7'))
         include(dependency('org.bstats:bstats-bukkit'))
@@ -101,7 +108,6 @@ shadowJar {
         include(dependency('com.fasterxml.jackson.dataformat:jackson-dataformat-toml'))
         include(dependency('com.fasterxml.jackson.core:jackson-databind'))
         include(dependency('com.fasterxml.jackson.core:jackson-annotations'))
-        include(dependency('com.fasterxml.jackson:jackson-bom'))
         include(dependency('com.fasterxml.jackson.core:jackson-core'))
         include(dependency('com.google.code.gson:gson'))
         include(dependency('org.mariadb.jdbc:mariadb-java-client'))
@@ -117,6 +123,20 @@ shadowJar {
         include(dependency('com.dansplugins:ponder-commands'))
         include(dependency('com.mixpanel:mixpanel-java'))
         include(dependency('org.json:json'))
+        include(dependency('org.http4k:http4k-core'))
+        include(dependency('org.http4k:http4k-server-undertow'))
+        include(dependency('org.http4k:http4k-realtime-core'))
+        include(dependency('io.undertow:undertow-core'))
+        include(dependency('org.jboss.logging:jboss-logging'))
+        include(dependency('org.jboss.xnio:xnio-api'))
+        include(dependency('org.jboss.xnio:xnio-nio'))
+        include(dependency('org.wildfly.common:wildfly-common'))
+        include(dependency('org.wildfly.client:wildfly-client-config'))
+        include(dependency('org.jboss.threads:jboss-threads'))
+        include(dependency('org.http4k:http4k-contract'))
+        include(dependency('org.http4k:http4k-contract-jsonschema'))
+        include(dependency('org.http4k:http4k-format-core'))
+        include(dependency('org.http4k:http4k-format-gson'))
     }
 
     relocate 'com.google', 'net.arvandor.numinoustreasury.shadow.com.google'
@@ -126,7 +146,6 @@ shadowJar {
     relocate 'google', 'net.arvandor.numinoustreasury.shadow.google'
     relocate 'io.r2dbc', 'net.arvandor.numinoustreasury.shadow.io.r2dbc'
     relocate 'jakarta', 'net.arvandor.numinoustreasury.shadow.jakarta'
-    relocate 'kotlin', 'net.arvandor.talekeeper.shadow.kotlin'
     relocate 'org.flywaydb', 'net.arvandor.numinoustreasury.shadow.org.flywaydb'
     relocate 'org.intellij', 'net.arvandor.numinoustreasury.shadow.org.intellij'
     relocate 'org.jetbrains', 'net.arvandor.numinoustreasury.shadow.org.jetbrains'
@@ -139,6 +158,11 @@ shadowJar {
     relocate 'org.apache', 'net.arvandor.numinoustreasury.shadow.org.apache'
     relocate 'org.checkerframework', 'net.arvandor.numinoustreasury.shadow.org.checkerframework'
     relocate 'waffle', 'net.arvandor.numinoustreasury.shadow.waffle'
+    relocate 'io.undertow', 'net.arvandor.numinoustreasury.shadow.io.undertow'
+    relocate 'org.http4k', 'net.arvandor.numinoustreasury.shadow.org.http4k'
+    relocate 'org.jboss', 'net.arvandor.numinoustreasury.shadow.org.jboss'
+    relocate 'org.wildfly', 'net.arvandor.numinoustreasury.shadow.org.wildfly'
+    relocate 'org.xnio', 'net.arvandor.numinoustreasury.shadow.org.xnio'
 }
 
 artifacts {
