@@ -21,3 +21,5 @@ stamina:
   vote-reward: 5
 mixpanel:
   token: ''
+web:
+  port: 9000
