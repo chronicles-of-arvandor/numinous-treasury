@@ -1,6 +1,7 @@
 package net.arvandor.numinoustreasury.web.droptable
 
 import com.rpkit.core.service.Services
+import net.arvandor.numinoustreasury.droptable.NuminousDropTable
 import net.arvandor.numinoustreasury.droptable.NuminousDropTableService
 import net.arvandor.numinoustreasury.item.NuminousItemCategory.CRAFTING_MATERIAL
 import net.arvandor.numinoustreasury.item.NuminousRarity
@@ -18,12 +19,16 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.with
+import org.http4k.lens.Query
+import org.http4k.lens.string
 
 fun dropTablesRoute(): ContractRoute {
+    val itemQuery = Query.string().optional("item", "The ID of an item")
     val spec =
         "/drop-tables" meta {
             summary = "Get a list of drop tables"
             operationId = "listDropTables"
+            queries += itemQuery
             returning(
                 OK,
                 DropTableResponse.listLens to
@@ -79,7 +84,14 @@ fun dropTablesRoute(): ContractRoute {
                 ?: return Response(INTERNAL_SERVER_ERROR).with(
                     ErrorResponse.lens of ErrorResponse("No drop table service available"),
                 )
-        val dropTables = dropTableService.dropTables
+        val filter = fun(dropTable: NuminousDropTable): Boolean {
+            val item = itemQuery(request)
+            if (item != null && !dropTable.items.any { drop -> drop.items.any { it.itemType.id == item } }) {
+                return false
+            }
+            return true
+        }
+        val dropTables = dropTableService.dropTables.filter(filter)
         return Response(OK).with(DropTableResponse.listLens of dropTables.map { it.toResponse() })
     }
 
