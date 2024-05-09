@@ -40,6 +40,7 @@ fun recipeRoute(): ContractRoute {
                                 ItemResponse(
                                     "backpack",
                                     "Backpack",
+                                    listOf("A backpack"),
                                     listOf(NuminousItemCategory.ADVENTURING_GEAR),
                                     NuminousRarity.COMMON,
                                     "5lb",
@@ -55,6 +56,7 @@ fun recipeRoute(): ContractRoute {
                                 ItemResponse(
                                     "leather",
                                     "Leather",
+                                    listOf("A piece of leather"),
                                     listOf(NuminousItemCategory.CRAFTING_MATERIAL),
                                     NuminousRarity.COMMON,
                                     "1lb",

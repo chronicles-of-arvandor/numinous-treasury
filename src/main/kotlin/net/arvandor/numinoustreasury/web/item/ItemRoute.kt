@@ -30,6 +30,7 @@ fun itemRoute(): ContractRoute {
                     ItemResponse(
                         "backpack",
                         "Backpack",
+                        listOf("A backpack"),
                         listOf(ADVENTURING_GEAR),
                         COMMON,
                         "5lb",

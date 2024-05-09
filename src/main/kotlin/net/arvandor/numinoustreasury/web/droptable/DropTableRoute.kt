@@ -40,6 +40,7 @@ fun dropTableRoute(): ContractRoute {
                                         ItemResponse(
                                             "stone",
                                             "Stone",
+                                            listOf("A stone"),
                                             listOf(CRAFTING_MATERIAL),
                                             COMMON,
                                             "5lb",
@@ -58,6 +59,7 @@ fun dropTableRoute(): ContractRoute {
                                         ItemResponse(
                                             "iron_ore",
                                             "Iron Ore",
+                                            listOf("Some iron ore"),
                                             listOf(CRAFTING_MATERIAL),
                                             NuminousRarity.RARE,
                                             "5lb",

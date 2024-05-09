@@ -38,6 +38,7 @@ fun itemsRoute(): ContractRoute {
                         ItemResponse(
                             "backpack",
                             "Backpack",
+                            listOf("A backpack"),
                             listOf(ADVENTURING_GEAR),
                             NuminousRarity.COMMON,
                             "5lb",
