@@ -16,6 +16,7 @@ import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
 import org.http4k.core.HttpHandler
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
@@ -29,7 +30,7 @@ import org.http4k.filter.OriginPolicy
 import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Path
 
-fun recipeRoute(): ContractRoute {
+fun recipeRoute(method: Method): ContractRoute {
     val name = Path.of("name", "The name of the recipe")
     val spec =
         "/recipe" / name meta {
@@ -89,7 +90,7 @@ fun recipeRoute(): ContractRoute {
                 NOT_FOUND,
                 ErrorResponse.lens to ErrorResponse("Recipe not found"),
             )
-        } bindContract GET
+        } bindContract method
 
     fun handler(name: String): HttpHandler =
         Cors(
