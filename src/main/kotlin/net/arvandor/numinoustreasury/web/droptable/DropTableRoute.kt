@@ -19,7 +19,12 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
+import org.http4k.core.then
 import org.http4k.core.with
+import org.http4k.filter.AllowAll
+import org.http4k.filter.CorsPolicy
+import org.http4k.filter.OriginPolicy
+import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Path
 
 fun dropTableRoute(): ContractRoute {
@@ -40,6 +45,7 @@ fun dropTableRoute(): ContractRoute {
                                         ItemResponse(
                                             "stone",
                                             "Stone",
+                                            listOf("A stone"),
                                             listOf(CRAFTING_MATERIAL),
                                             COMMON,
                                             "5lb",
@@ -58,6 +64,7 @@ fun dropTableRoute(): ContractRoute {
                                         ItemResponse(
                                             "iron_ore",
                                             "Iron Ore",
+                                            listOf("Some iron ore"),
                                             listOf(CRAFTING_MATERIAL),
                                             NuminousRarity.RARE,
                                             "5lb",
@@ -80,7 +87,13 @@ fun dropTableRoute(): ContractRoute {
         } bindContract GET
 
     fun handler(id: String): HttpHandler =
-        handle@{ request ->
+        Cors(
+            CorsPolicy(
+                originPolicy = OriginPolicy.AllowAll(),
+                headers = emptyList(),
+                methods = listOf(GET),
+            ),
+        ).then handle@{ request ->
             val dropTableService =
                 Services.INSTANCE.get(NuminousDropTableService::class.java)
                     ?: return@handle Response(INTERNAL_SERVER_ERROR).with(

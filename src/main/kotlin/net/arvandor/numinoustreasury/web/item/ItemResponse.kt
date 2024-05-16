@@ -10,6 +10,7 @@ import org.http4k.format.Gson.auto
 data class ItemResponse(
     val id: String,
     val name: String,
+    val lore: List<String>,
     val categories: List<NuminousItemCategory>,
     val rarity: NuminousRarity,
     val weight: String,
@@ -27,6 +28,7 @@ fun NuminousItemType.toResponse() =
     ItemResponse(
         id = id,
         name = name,
+        lore = minecraftItem.itemMeta?.lore ?: emptyList(),
         categories = categories,
         rarity = rarity,
         weight = weight.toString(),
