@@ -18,7 +18,12 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.OK
+import org.http4k.core.then
 import org.http4k.core.with
+import org.http4k.filter.AllowAll
+import org.http4k.filter.CorsPolicy
+import org.http4k.filter.OriginPolicy
+import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Query
 import org.http4k.lens.string
 
@@ -97,5 +102,12 @@ fun dropTablesRoute(): ContractRoute {
         return Response(OK).with(DropTableResponse.listLens of dropTables.map { it.toResponse() })
     }
 
-    return spec to ::handler
+    return spec to
+        Cors(
+            CorsPolicy(
+                originPolicy = OriginPolicy.AllowAll(),
+                headers = emptyList(),
+                methods = listOf(GET),
+            ),
+        ).then(::handler)
 }
