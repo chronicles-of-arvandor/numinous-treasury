@@ -13,6 +13,8 @@ import org.http4k.contract.bind
 import org.http4k.contract.contract
 import org.http4k.contract.openapi.ApiInfo
 import org.http4k.contract.openapi.v3.OpenApi3
+import org.http4k.core.Method.GET
+import org.http4k.core.Method.OPTIONS
 import org.http4k.format.Gson
 import org.http4k.routing.routes
 import org.http4k.server.Undertow
@@ -23,14 +25,22 @@ class WebServer(private val plugin: NuminousTreasury) {
         contract {
             renderer = OpenApi3(ApiInfo(plugin.name, plugin.description.version), Gson)
             descriptionPath = "/openapi.json"
-            routes += itemsRoute()
-            routes += itemRoute()
-            routes += dropTablesRoute()
-            routes += dropTableRoute()
-            routes += nodesRoute()
-            routes += nodeRoute()
-            routes += recipesRoute()
-            routes += recipeRoute()
+            routes += itemsRoute(GET)
+            routes += itemsRoute(OPTIONS)
+            routes += itemRoute(GET)
+            routes += itemRoute(OPTIONS)
+            routes += dropTablesRoute(GET)
+            routes += dropTablesRoute(OPTIONS)
+            routes += dropTableRoute(GET)
+            routes += dropTableRoute(OPTIONS)
+            routes += nodesRoute(GET)
+            routes += nodesRoute(OPTIONS)
+            routes += nodeRoute(GET)
+            routes += nodeRoute(OPTIONS)
+            routes += recipesRoute(GET)
+            routes += recipesRoute(OPTIONS)
+            routes += recipeRoute(GET)
+            routes += recipeRoute(OPTIONS)
         }
     private val handler = routes("/api/v1" bind contract)
 

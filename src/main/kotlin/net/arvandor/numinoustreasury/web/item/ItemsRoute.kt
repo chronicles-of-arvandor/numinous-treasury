@@ -10,6 +10,7 @@ import net.arvandor.numinoustreasury.web.error.ErrorResponse
 import org.bukkit.Material.PLAYER_HEAD
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -25,7 +26,7 @@ import org.http4k.lens.Query
 import org.http4k.lens.enum
 import org.http4k.lens.string
 
-fun itemsRoute(): ContractRoute {
+fun itemsRoute(method: Method): ContractRoute {
     val nameQuery = Query.string().optional("name", "All or part of the name of the item")
     val categoryQuery = Query.enum<NuminousItemCategory>().optional("category", "The category of the item")
     val rarityQuery = Query.enum<NuminousRarity>().optional("rarity", "The rarity of the item")
@@ -53,7 +54,7 @@ fun itemsRoute(): ContractRoute {
                         ),
                     ),
             )
-        } bindContract GET
+        } bindContract method
 
     fun handler(request: Request): Response {
         val name = nameQuery(request)

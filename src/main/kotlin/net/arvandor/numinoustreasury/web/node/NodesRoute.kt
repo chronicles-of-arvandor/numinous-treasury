@@ -6,6 +6,7 @@ import net.arvandor.numinoustreasury.web.error.ErrorResponse
 import net.arvandor.numinoustreasury.web.stamina.StaminaCostResponse
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -22,7 +23,7 @@ import org.http4k.lens.enum
 import org.http4k.lens.int
 import org.http4k.lens.string
 
-fun nodesRoute(): ContractRoute {
+fun nodesRoute(method: Method): ContractRoute {
     val nameQuery = Query.string().optional("name", "All or part of the name of the node")
     val professionQuery = Query.string().optional("profession", "The ID of a profession")
     val levelGteQuery = Query.int().optional("levelGte", "Filter levels greater than or equal to n, ignored if no profession specified")
@@ -65,7 +66,7 @@ fun nodesRoute(): ContractRoute {
                         ),
                     ),
             )
-        } bindContract GET
+        } bindContract method
 
     fun handler(request: Request): Response {
         val name = nameQuery(request)

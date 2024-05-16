@@ -15,6 +15,7 @@ import org.bukkit.Material.LEATHER
 import org.bukkit.Material.PLAYER_HEAD
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -31,7 +32,7 @@ import org.http4k.lens.enum
 import org.http4k.lens.int
 import org.http4k.lens.string
 
-fun recipesRoute(): ContractRoute {
+fun recipesRoute(method: Method): ContractRoute {
     val nameQuery = Query.string().optional("name", "All or part of the name of the recipe")
     val ingredientQuery = Query.string().optional("ingredient", "The ID of one of the ingredients")
     val resultQuery = Query.string().optional("result", "The ID of one of the resulting items")
@@ -123,7 +124,7 @@ fun recipesRoute(): ContractRoute {
                         ),
                     ),
             )
-        } bindContract GET
+        } bindContract method
 
     fun handler(request: Request): Response {
         val name = nameQuery(request)
