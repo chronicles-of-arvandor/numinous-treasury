@@ -8,6 +8,7 @@ import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
 import org.http4k.core.HttpHandler
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
@@ -21,7 +22,7 @@ import org.http4k.filter.OriginPolicy
 import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Path
 
-fun nodeRoute(): ContractRoute {
+fun nodeRoute(method: Method): ContractRoute {
     val id = Path.of("id", "The ID of the node")
     val spec =
         "/node" / id meta {
@@ -45,7 +46,7 @@ fun nodeRoute(): ContractRoute {
                         "mining_1",
                     ),
             )
-        } bindContract GET
+        } bindContract method
 
     fun handler(id: String): HttpHandler =
         Cors(

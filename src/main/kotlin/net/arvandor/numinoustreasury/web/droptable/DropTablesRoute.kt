@@ -13,6 +13,7 @@ import org.bukkit.Material.IRON_ORE
 import org.bukkit.Material.STONE
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -27,7 +28,7 @@ import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Query
 import org.http4k.lens.string
 
-fun dropTablesRoute(): ContractRoute {
+fun dropTablesRoute(method: Method): ContractRoute {
     val itemQuery = Query.string().optional("item", "The ID of an item")
     val spec =
         "/drop-tables" meta {
@@ -83,7 +84,7 @@ fun dropTablesRoute(): ContractRoute {
                         ),
                     ),
             )
-        } bindContract GET
+        } bindContract method
 
     fun handler(request: Request): Response {
         val dropTableService =
