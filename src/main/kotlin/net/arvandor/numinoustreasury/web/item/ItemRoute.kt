@@ -15,7 +15,12 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
+import org.http4k.core.then
 import org.http4k.core.with
+import org.http4k.filter.AllowAll
+import org.http4k.filter.CorsPolicy
+import org.http4k.filter.OriginPolicy
+import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Path
 
 fun itemRoute(): ContractRoute {
@@ -46,7 +51,13 @@ fun itemRoute(): ContractRoute {
         } bindContract GET
 
     fun handler(id: String): HttpHandler =
-        handle@{ request ->
+        Cors(
+            CorsPolicy(
+                originPolicy = OriginPolicy.AllowAll(),
+                headers = emptyList(),
+                methods = listOf(GET),
+            ),
+        ).then handle@{ request ->
             val itemService =
                 Services.INSTANCE.get(NuminousItemService::class.java)
                     ?: return@handle Response(INTERNAL_SERVER_ERROR).with(
