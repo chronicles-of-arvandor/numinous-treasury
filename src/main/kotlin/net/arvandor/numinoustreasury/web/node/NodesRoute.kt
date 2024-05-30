@@ -33,6 +33,8 @@ fun nodesRoute(method: Method): ContractRoute {
     val experienceLteQuery = Query.int().optional("experienceLte", "Filter nodes with experience less than or equal to n")
     val staminaCostQuery = Query.enum<StaminaCostResponse>().optional("staminaCost", "Filter nodes by stamina cost")
     val dropTableQuery = Query.string().optional("dropTable", "The ID of a drop table")
+    val offsetQuery = Query.int().optional("offset", "The number of nodes to skip")
+    val limitQuery = Query.int().optional("limit", "The maximum number of nodes to return")
     val spec =
         "/nodes" meta {
             summary = "Get a list of nodes"
@@ -46,6 +48,8 @@ fun nodesRoute(method: Method): ContractRoute {
             queries += experienceLteQuery
             queries += staminaCostQuery
             queries += dropTableQuery
+            queries += offsetQuery
+            queries += limitQuery
             returning(
                 OK,
                 NodeResponse.listLens to
@@ -78,6 +82,8 @@ fun nodesRoute(method: Method): ContractRoute {
         val experienceLte = experienceLteQuery(request)
         val staminaCost = staminaCostQuery(request)
         val dropTable = dropTableQuery(request)
+        val offset = offsetQuery(request)
+        val limit = limitQuery(request)
 
         val nodeService =
             Services.INSTANCE.get(NuminousNodeService::class.java)
@@ -118,7 +124,10 @@ fun nodesRoute(method: Method): ContractRoute {
             }
             return true
         }
-        val nodes = nodeService.nodes.map { it.toResponse() }.filter(filter)
+        val nodes =
+            nodeService.nodes.map { it.toResponse() }.filter(filter)
+                .drop(offset ?: 0)
+                .take(limit ?: Int.MAX_VALUE)
         return Response(OK).with(NodeResponse.listLens of nodes)
     }
 

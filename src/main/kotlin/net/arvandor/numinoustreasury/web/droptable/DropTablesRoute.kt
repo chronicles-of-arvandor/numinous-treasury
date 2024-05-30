@@ -26,15 +26,20 @@ import org.http4k.filter.CorsPolicy
 import org.http4k.filter.OriginPolicy
 import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Query
+import org.http4k.lens.int
 import org.http4k.lens.string
 
 fun dropTablesRoute(method: Method): ContractRoute {
     val itemQuery = Query.string().optional("item", "The ID of an item")
+    val offsetQuery = Query.int().optional("offset", "The number of drop tables to skip")
+    val limitQuery = Query.int().optional("limit", "The maximum number of drop tables to return")
     val spec =
         "/drop-tables" meta {
             summary = "Get a list of drop tables"
             operationId = "listDropTables"
             queries += itemQuery
+            queries += offsetQuery
+            queries += limitQuery
             returning(
                 OK,
                 DropTableResponse.listLens to
@@ -87,6 +92,8 @@ fun dropTablesRoute(method: Method): ContractRoute {
         } bindContract method
 
     fun handler(request: Request): Response {
+        val offset = offsetQuery(request)
+        val limit = limitQuery(request)
         val dropTableService =
             Services.INSTANCE.get(NuminousDropTableService::class.java)
                 ?: return Response(INTERNAL_SERVER_ERROR).with(
@@ -99,7 +106,10 @@ fun dropTablesRoute(method: Method): ContractRoute {
             }
             return true
         }
-        val dropTables = dropTableService.dropTables.filter(filter)
+        val dropTables =
+            dropTableService.dropTables.filter(filter)
+                .drop(offset ?: 0)
+                .take(limit ?: Int.MAX_VALUE)
         return Response(OK).with(DropTableResponse.listLens of dropTables.map { it.toResponse() })
     }
 

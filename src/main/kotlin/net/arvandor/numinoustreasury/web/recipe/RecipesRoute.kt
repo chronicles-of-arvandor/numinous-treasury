@@ -56,6 +56,8 @@ fun recipesRoute(method: Method): ContractRoute {
     val experienceLteQuery = Query.int().optional("experienceLte", "Filter for recipes with experience less or equal to n")
     val staminaCostQuery = Query.enum<StaminaCostResponse>().optional("staminaCost", "Filter for recipes by stamina cost")
     val workstationQuery = Query.enum<Material>().optional("workstation", "Filter for recipes that require a specific workstation")
+    val offsetQuery = Query.int().optional("offset", "The number of recipes to skip")
+    val limitQuery = Query.int().optional("limit", "The maximum number of recipes to return")
 
     val spec =
         "/recipes" meta {
@@ -72,6 +74,8 @@ fun recipesRoute(method: Method): ContractRoute {
             queries += experienceLteQuery
             queries += staminaCostQuery
             queries += workstationQuery
+            queries += offsetQuery
+            queries += limitQuery
             returning(
                 OK,
                 RecipeResponse.listLens to
@@ -138,6 +142,8 @@ fun recipesRoute(method: Method): ContractRoute {
         val experienceLte = experienceLteQuery(request)
         val staminaCost = staminaCostQuery(request)
         val workstation = workstationQuery(request)
+        val offset = offsetQuery(request)
+        val limit = limitQuery(request)
 
         val recipeService =
             Services.INSTANCE.get(NuminousRecipeService::class.java)
@@ -184,7 +190,11 @@ fun recipesRoute(method: Method): ContractRoute {
             }
             return true
         }
-        val recipes = recipeService.recipes.map { it.toResponse() }.filter(filter)
+        val recipes =
+            recipeService.recipes.map { it.toResponse() }.filter(filter)
+                .drop(offset ?: 0)
+                .take(limit ?: Int.MAX_VALUE)
+
         return Response(OK).with(RecipeResponse.listLens of recipes)
     }
 

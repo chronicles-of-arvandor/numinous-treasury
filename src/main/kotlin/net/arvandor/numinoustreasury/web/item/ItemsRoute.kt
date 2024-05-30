@@ -24,12 +24,15 @@ import org.http4k.filter.OriginPolicy
 import org.http4k.filter.ServerFilters.Cors
 import org.http4k.lens.Query
 import org.http4k.lens.enum
+import org.http4k.lens.int
 import org.http4k.lens.string
 
 fun itemsRoute(method: Method): ContractRoute {
     val nameQuery = Query.string().optional("name", "All or part of the name of the item")
-    val categoryQuery = Query.enum<NuminousItemCategory>().optional("category", "The category of the item")
-    val rarityQuery = Query.enum<NuminousRarity>().optional("rarity", "The rarity of the item")
+    val categoryQuery = Query.enum<NuminousItemCategory>().multi.optional("category", "The category of the item")
+    val rarityQuery = Query.enum<NuminousRarity>().multi.optional("rarity", "The rarity of the item")
+    val offsetQuery = Query.int().optional("offset", "The number of items to skip")
+    val limitQuery = Query.int().optional("limit", "The maximum number of items to return")
     val spec =
         "/items" meta {
             summary = "Get a list of items"
@@ -37,6 +40,7 @@ fun itemsRoute(method: Method): ContractRoute {
             queries += nameQuery
             queries += categoryQuery
             queries += rarityQuery
+            queries += offsetQuery
             returning(
                 OK,
                 ItemResponse.listLens to
@@ -58,8 +62,10 @@ fun itemsRoute(method: Method): ContractRoute {
 
     fun handler(request: Request): Response {
         val name = nameQuery(request)
-        val category = categoryQuery(request)
-        val rarity = rarityQuery(request)
+        val categories = categoryQuery(request)
+        val rarities = rarityQuery(request)
+        val offset = offsetQuery(request)
+        val limit = limitQuery(request)
         val itemService =
             Services.INSTANCE.get(NuminousItemService::class.java)
                 ?: return Response(INTERNAL_SERVER_ERROR).with(
@@ -69,15 +75,18 @@ fun itemsRoute(method: Method): ContractRoute {
             if (name != null && !itemType.name.contains(name, ignoreCase = true)) {
                 return false
             }
-            if (category != null && itemType.categories.none { it == category }) {
+            if (categories != null && itemType.categories.none { categories.contains(it) }) {
                 return false
             }
-            if (rarity != null && itemType.rarity != rarity) {
+            if (rarities != null && !rarities.contains(itemType.rarity)) {
                 return false
             }
             return true
         }
-        val items = itemService.itemTypes.filter(filter)
+        val items =
+            itemService.itemTypes.filter(filter)
+                .drop(offset ?: 0)
+                .take(limit ?: Int.MAX_VALUE)
         return Response(OK).with(ItemResponse.listLens of items.map { it.toResponse() })
     }
 
