@@ -41,6 +41,7 @@ fun itemsRoute(method: Method): ContractRoute {
             queries += categoryQuery
             queries += rarityQuery
             queries += offsetQuery
+            queries += limitQuery
             returning(
                 OK,
                 ItemResponse.listLens to
